@@ -1,0 +1,6 @@
+@sgNetApi.Api_HostAddress = http://localhost:5283
+
+GET {{sgNetApi.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

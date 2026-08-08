@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/sgNetApi.Api/sgNetApi.Api.csproj" />
+    <Project Path="src/sgNetApi.Application/sgNetApi.Application.csproj" />
+    <Project Path="src/sgNetApi.Domain/sgNetApi.Domain.csproj" />
+    <Project Path="src/sgNetApi.Infrastructure/sgNetApi.Infrastructure.csproj" />
+  </Folder>
+</Solution>
