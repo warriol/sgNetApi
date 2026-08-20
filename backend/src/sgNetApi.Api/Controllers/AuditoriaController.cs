@@ -1,3 +1,4 @@
+using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -83,5 +84,59 @@ public class AuditoriaController : ControllerBase
         };
 
         return Ok(resultado);
+    }
+
+    /// <summary>
+    /// Exporta los logs de auditoría filtrados directamente a un archivo descargable en formato CSV de forma eficiente.
+    /// </summary>
+    [HttpGet("exportar")]
+    [RequirePermission("admin.auditoria.exportar")]
+    public async Task<IActionResult> ExportarACsv([FromQuery] FiltroAuditoriaDto filtro)
+    {
+        var query = _context.AuditoriaLogs.AsNoTracking().AsQueryable();
+
+        // Aplicamos los mismos filtros de búsqueda que el listado general
+        if (!string.IsNullOrWhiteSpace(filtro.UsuarioCi))
+        {
+            query = query.Where(a => a.UsuarioCi.Contains(filtro.UsuarioCi));
+        }
+        if (filtro.FechaDesde.HasValue)
+        {
+            query = query.Where(a => a.Fecha >= filtro.FechaDesde.Value.ToUniversalTime());
+        }
+        if (filtro.FechaHasta.HasValue)
+        {
+            query = query.Where(a => a.Fecha <= filtro.FechaHasta.Value.ToUniversalTime());
+        }
+        if (filtro.CodigoEstado.HasValue)
+        {
+            query = query.Where(a => a.CodigoEstado == filtro.CodigoEstado.Value);
+        }
+
+        // Traemos los datos ordenados cronológicamente de forma descendente
+        var logs = await query.OrderByDescending(a => a.Fecha).ToListAsync();
+
+        var csvBuilder = new StringBuilder();
+        
+        // Escribimos los encabezados de las columnas del reporte
+        csvBuilder.AppendLine("Id,Fecha (UTC),Usuario CI,IP Origen,Metodo HTTP,Ruta,Codigo Estado,Tiempo Ejecucion (ms),Excepcion / Detalles");
+
+        foreach (var log in logs)
+        {
+            // Sanitizar campos de texto para evitar inyecciones CSV o roturas de filas por comas internas
+            string rutaSanitizada = log.Ruta.Contains(",") ? $"\"{log.Ruta}\"" : log.Ruta;
+            string excepcionSanitizada = string.IsNullOrEmpty(log.Excepcion) 
+                ? "" 
+                : $"\"{log.Excepcion.Replace("\"", "\"\"").Replace("\r\n", " ").Replace("\n", " ")}\"";
+
+            csvBuilder.AppendLine($"{log.Id},{log.Fecha:yyyy-MM-dd HH:mm:ss},{log.UsuarioCi},{log.IpOrigen},{log.MetodoHttp},{rutaSanitizada},{log.CodigoEstado},{log.TiempoEjecucionMs},{excepcionSanitizada}");
+        }
+
+        // UTF-8 con BOM (Byte Order Mark) para que Microsoft Excel reconozca automáticamente las tildes y caracteres especiales en español
+        var bytesConBom = Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(csvBuilder.ToString())).ToArray();
+
+        string nombreArchivo = $"Auditoria_Logs_{DateTime.UtcNow:yyyyMMdd_HHmmss}.csv";
+        
+        return File(bytesConBom, "text/csv", nombreArchivo);
     }
 }

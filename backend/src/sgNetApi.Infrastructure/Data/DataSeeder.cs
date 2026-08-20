@@ -68,40 +68,61 @@ public class DataSeeder
             await _context.SaveChangesAsync();
         }
 
-        // 2. Semilla de Permisos Iniciales
-        if (!await _context.Permisos.AnyAsync())
+        // 2. Semilla de Permisos Iniciales (Lista completa deseada)
+        var permisosDeseados = new List<Permiso>
         {
-            _context.Permisos.AddRange(
-                new Permiso { IdPermiso = 1, Nombre = "admin.usuarios.crear", Descripcion = "Permite registrar nuevos usuarios" },
-                new Permiso { IdPermiso = 2, Nombre = "admin.usuarios.leer", Descripcion = "Permite ver la lista y detalle de usuarios" },
-                new Permiso { IdPermiso = 3, Nombre = "admin.usuarios.editar", Descripcion = "Permite modificar datos de usuarios" },
-                new Permiso { IdPermiso = 4, Nombre = "admin.usuarios.eliminar", Descripcion = "Permite deshabilitar usuarios" },
-                new Permiso { IdPermiso = 5, Nombre = "roles.administrar", Descripcion = "Permite gestionar roles y asignar permisos" }
-            );
-            await _context.SaveChangesAsync();
+            new Permiso { IdPermiso = 1, Nombre = "admin.usuarios.crear", Descripcion = "Permite registrar nuevos usuarios" },
+            new Permiso { IdPermiso = 2, Nombre = "admin.usuarios.leer", Descripcion = "Permite ver la lista y detalle de usuarios" },
+            new Permiso { IdPermiso = 3, Nombre = "admin.usuarios.editar", Descripcion = "Permite modificar datos de usuarios" },
+            new Permiso { IdPermiso = 4, Nombre = "admin.usuarios.eliminar", Descripcion = "Permite deshabilitar usuarios" },
+            new Permiso { IdPermiso = 5, Nombre = "roles.administrar", Descripcion = "Permite gestionar roles y asignar permisos" },
+            new Permiso { IdPermiso = 6, Nombre = "admin.auditoria.leer", Descripcion = "Consultar el historial de auditoría HTTP y logs" },
+            new Permiso { IdPermiso = 7, Nombre = "admin.auditoria.exportar", Descripcion = "Exportar logs de auditoría a formato CSV" }
+        };
+
+        foreach (var permiso in permisosDeseados)
+        {
+            if (!await _context.Permisos.AnyAsync(p => p.Nombre == permiso.Nombre))
+            {
+                _context.Permisos.Add(permiso);
+            }
         }
+        await _context.SaveChangesAsync();
 
-        // 3. Semilla de Roles Iniciales y vinculación con Permisos
-        if (!await _context.Roles.AnyAsync())
+        // 3. Semilla de Roles Iniciales y vinculación incremental con Permisos
+        if (!await _context.Roles.AnyAsync(r => r.Nombre == "Administrador"))
         {
-            var rolAdmin = new Rol { IdRol = 1, Nombre = "Administrador" };
-            var rolOperador = new Rol { IdRol = 2, Nombre = "Operador" };
+            _context.Roles.Add(new Rol { IdRol = 1, Nombre = "Administrador" });
+        }
+        if (!await _context.Roles.AnyAsync(r => r.Nombre == "Operador"))
+        {
+            _context.Roles.Add(new Rol { IdRol = 2, Nombre = "Operador" });
+        }
+        await _context.SaveChangesAsync();
 
-            _context.Roles.AddRange(rolAdmin, rolOperador);
-            await _context.SaveChangesAsync();
-
-            // Solo asignar al Administrador los permisos cuyo nombre comience con "admin." o "usuarios."
+        // Asignar al Administrador todos los permisos que empiecen con "admin." o "roles."
+        var rolAdmin = await _context.Roles.FirstOrDefaultAsync(r => r.Nombre == "Administrador");
+        if (rolAdmin != null)
+        {
             var permisosAdmin = await _context.Permisos
-                .Where(p => p.Nombre.StartsWith("admin."))
+                .Where(p => p.Nombre.StartsWith("admin.") || p.Nombre.StartsWith("roles."))
+                .ToListAsync();
+
+            var asignacionesActuales = await _context.Set<RolPermiso>()
+                .Where(rp => rp.IdRol == rolAdmin.IdRol)
+                .Select(rp => rp.IdPermiso)
                 .ToListAsync();
 
             foreach (var permiso in permisosAdmin)
             {
-                _context.Set<RolPermiso>().Add(new RolPermiso
+                if (!asignacionesActuales.Contains(permiso.IdPermiso))
                 {
-                    IdRol = rolAdmin.IdRol,
-                    IdPermiso = permiso.IdPermiso
-                });
+                    _context.Set<RolPermiso>().Add(new RolPermiso
+                    {
+                        IdRol = rolAdmin.IdRol,
+                        IdPermiso = permiso.IdPermiso
+                    });
+                }
             }
             await _context.SaveChangesAsync();
         }

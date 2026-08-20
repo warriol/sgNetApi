@@ -306,3 +306,9 @@ dotnet sln add tests/sgNetApi.Tests/sgNetApi.Tests.csproj
        - backend/src/sgNetApi.Domain/DTOs/AuditoriaDtos.cs
 2. Crear el Controlador AuditoriaController
        - backend/src/sgNetApi.Api/Controllers/AuditoriaController.cs
+## Auditoria - Exportacion a aexcell
+1. Agregar el endpoint de exportación en AuditoriaController
+       - backend/src/sgNetApi.Api/Controllers/AuditoriaController.cs (modificar)
+## Permisos de auditoria
+1. Agregar los nuevos permisos de Auditoría al DataSeeder.cs
+       - backend/src/sgNetApi.Infrastructure/Data/DataSeeder.cs (modificar)
