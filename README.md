@@ -60,12 +60,28 @@ dotnet add src/sgNetApi.Infrastructure/sgNetApi.Infrastructure.csproj package Mi
 
 # En la capa Api: Herramientas de diseño EF Core para poder generar migraciones
 dotnet add src/sgNetApi.Api/sgNetApi.Api.csproj package Microsoft.EntityFrameworkCore.Design
+dotnet add src/sgNetApi.Api/sgNetApi.Api.csproj package Swashbuckle.AspNetCore
+
+dotnet add src/sgNetApi.Infrastructure/sgNetApi.Infrastructure.csproj package System.IdentityModel.Tokens.Jwt
+dotnet add src/sgNetApi.Infrastructure/sgNetApi.Infrastructure.csproj package Microsoft.IdentityModel.Tokens
+dotnet add src/sgNetApi.Api/sgNetApi.Api.csproj package Swashbuckle.AspNetCore
+dotnet add src/sgNetApi.Api/sgNetApi.Api.csproj package Microsoft.OpenApi
+
+# utilizar .env
+dotnet add src/sgNetApi.Api/sgNetApi.Api.csproj package DotNetEnv
 
 # Verificar
 dotnet build
+
+# Ejecutar
+dotnet run --project src/sgNetApi.Api/sgNetApi.Api.csproj 
+
+# Swagger
+http://localhost:5283/swagger/index.html
+
 ```
 
-# Comandos
+## Comandos
 
 - primero inicializar docker desktop
 

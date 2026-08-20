@@ -5,4 +5,7 @@
     <Project Path="src/sgNetApi.Domain/sgNetApi.Domain.csproj" />
     <Project Path="src/sgNetApi.Infrastructure/sgNetApi.Infrastructure.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/sgNetApi.Tests/sgNetApi.Tests.csproj" />
+  </Folder>
 </Solution>
