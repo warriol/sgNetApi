@@ -10,6 +10,7 @@ using sgNetApi.Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
 using sgNetApi.Api.Authorization;
 using sgNetApi.Api.Middlewares;
+using sgNetApi.Infrastructure.Workers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,6 +41,8 @@ builder.Services.AddScoped<DataSeeder>();
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
 builder.Services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
 builder.Services.AddScoped<IPasswordService, PasswordService>();
+// Registrar el servicio en segundo plano para depuración automática
+builder.Services.AddHostedService<AuditoriaCleanupWorker>();
 
 // 4. Configurar Autenticación JWT Bearer
 var jwtSecret = Environment.GetEnvironmentVariable("JWT_SECRET_KEY") ?? "ClaveSecretaSuperSeguraSGNetApi2026_Uruguay!";

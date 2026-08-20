@@ -268,4 +268,52 @@ public class UsuariosController : ControllerBase
 
         return Ok(new { mensaje = $"El estado del usuario ha sido cambiado a: {estadoTexto}." });
     }
+
+    /// <summary>
+    /// Actualiza de forma atómica los roles y permisos directos asignados a un usuario.
+    /// </summary>
+    [HttpPut("{ci}/roles-permisos")]
+    [RequirePermission("admin.usuarios.editar")]
+    public async Task<IActionResult> ActualizarRolesYPermisos(long ci, [FromBody] AsignarRolesPermisosUsuarioDto dto)
+    {
+        var usuario = await _context.Usuarios
+            .Include(u => u.UsuarioRoles)
+            .Include(u => u.UsuarioPermisos)
+            .FirstOrDefaultAsync(u => u.Ci == ci);
+
+        if (usuario == null)
+            return NotFound(new { mensaje = "Usuario no encontrado." });
+
+        // 1. Sincronizar Roles
+        _context.Set<UsuarioRol>().RemoveRange(usuario.UsuarioRoles);
+        if (dto.IdsRoles != null && dto.IdsRoles.Any())
+        {
+            foreach (var idRol in dto.IdsRoles)
+            {
+                _context.Set<UsuarioRol>().Add(new UsuarioRol
+                {
+                    UsuarioCi = ci,
+                    IdRol = idRol
+                });
+            }
+        }
+
+        // 2. Sincronizar Permisos Directos (excepciones)
+        _context.Set<UsuarioPermiso>().RemoveRange(usuario.UsuarioPermisos);
+        if (dto.IdsPermisosDirectos != null && dto.IdsPermisosDirectos.Any())
+        {
+            foreach (var idPermiso in dto.IdsPermisosDirectos)
+            {
+                _context.Set<UsuarioPermiso>().Add(new UsuarioPermiso
+                {
+                    UsuarioCi = ci,
+                    IdPermiso = idPermiso
+                });
+            }
+        }
+
+        await _context.SaveChangesAsync();
+
+        return Ok(new { mensaje = "Roles y permisos del usuario actualizados correctamente." });
+    }
 }

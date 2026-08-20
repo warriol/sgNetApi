@@ -1,0 +1,510 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "sgNetApi - Módulo de Administración y Seguridad",
+    "description": "Especificación OpenAPI v3 para el Módulo de Administración, Seguridad y Auditoría del sistema sgNetApi.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5283",
+      "description": "Servidor de Desarrollo Local"
+    }
+  ],
+  "paths": {
+    "/api/Auth/login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Iniciar sesión de usuario",
+        "description": "Autentica al usuario por Cédula de Identidad y contraseña. Incrementa el contador de intentos fallidos al errar y bloquea la cuenta al 3er intento.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ci": {
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 43791806
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "Admin.123456"
+                  }
+                },
+                "required": [
+                  "ci",
+                  "password"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Autenticación exitosa",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string",
+                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                    },
+                    "roles": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "permisos": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Credenciales inválidas o cuenta bloqueada"
+          }
+        }
+      }
+    },
+    "/api/Auth/cambiar-password": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Cambiar contraseña propia",
+        "description": "Permite al usuario autenticado cambiar su contraseña validando la clave actual y que la nueva no coincida con las últimas 5 utilizadas.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ci": {
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 43791806
+                  },
+                  "passwordActual": {
+                    "type": "string",
+                    "example": "Admin.123456"
+                  },
+                  "passwordNueva": {
+                    "type": "string",
+                    "example": "NuevaClave.2026"
+                  }
+                },
+                "required": [
+                  "ci",
+                  "passwordActual",
+                  "passwordNueva"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Contraseña actualizada con éxito"
+          },
+          "400": {
+            "description": "Contraseña repetida en el historial o clave actual incorrecta"
+          },
+          "401": {
+            "description": "No autorizado"
+          }
+        }
+      }
+    },
+    "/api/Usuarios": {
+      "get": {
+        "tags": [
+          "Usuarios"
+        ],
+        "summary": "Obtener lista completa de usuarios",
+        "description": "Retorna el catálogo general de usuarios con sus grados, escalafones y roles asociados.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de usuarios retornada con éxito"
+          },
+          "401": {
+            "description": "No autorizado"
+          },
+          "403": {
+            "description": "Permiso 'admin.usuarios.leer' requerido"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Usuarios"
+        ],
+        "summary": "Crear un nuevo usuario",
+        "description": "Registra un nuevo funcionario en la base de datos.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ci": {
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 12345678
+                  },
+                  "nombre": {
+                    "type": "string",
+                    "example": "Juan"
+                  },
+                  "apellido": {
+                    "type": "string",
+                    "example": "Pérez"
+                  },
+                  "correo": {
+                    "type": "string",
+                    "example": "juan.perez@sgnet.gub.uy"
+                  },
+                  "celular": {
+                    "type": "integer",
+                    "example": 99111222
+                  },
+                  "idGrado": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "idEscalafon": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "idUuee": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "idDependencia": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "idsRoles": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    },
+                    "example": [
+                      2
+                    ]
+                  },
+                  "idsPermisosDirectos": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    },
+                    "example": []
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Usuario creado exitosamente"
+          },
+          "403": {
+            "description": "Permiso 'admin.usuarios.crear' requerido"
+          }
+        }
+      }
+    },
+    "/api/Usuarios/{ci}/roles-permisos": {
+      "put": {
+        "tags": [
+          "Usuarios"
+        ],
+        "summary": "Actualizar roles y permisos de un usuario",
+        "description": "Sincroniza atómicamente los roles y permisos directos asignados a un usuario específico.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "ci",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "idsRoles": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    },
+                    "example": [
+                      1,
+                      2
+                    ]
+                  },
+                  "idsPermisosDirectos": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    },
+                    "example": [
+                      6
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Roles y permisos actualizados correctamente"
+          },
+          "403": {
+            "description": "Permiso 'admin.usuarios.editar' requerido"
+          },
+          "404": {
+            "description": "Usuario no encontrado"
+          }
+        }
+      }
+    },
+    "/api/Permisos": {
+      "get": {
+        "tags": [
+          "Permisos"
+        ],
+        "summary": "Obtener catálogo de permisos",
+        "description": "Retorna todos los permisos disponibles en la base de datos para armar la interfaz del frontend.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Catálogo de permisos retornado con éxito"
+          },
+          "403": {
+            "description": "Permiso 'roles.administrar' requerido"
+          }
+        }
+      }
+    },
+    "/api/Roles": {
+      "get": {
+        "tags": [
+          "Roles"
+        ],
+        "summary": "Obtener todos los roles",
+        "description": "Lista los roles del sistema con sus permisos asociados.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de roles retornada con éxito"
+          },
+          "403": {
+            "description": "Permiso 'roles.administrar' requerido"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Roles"
+        ],
+        "summary": "Crear un nuevo Rol",
+        "description": "Crea un rol asignándole una lista inicial de permisos por ID.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nombre": {
+                    "type": "string",
+                    "example": "Supervisor de Operaciones"
+                  },
+                  "idsPermisos": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    },
+                    "example": [
+                      1,
+                      2,
+                      6
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Rol creado exitosamente"
+          },
+          "403": {
+            "description": "Permiso 'roles.administrar' requerido"
+          }
+        }
+      }
+    },
+    "/api/Auditoria": {
+      "get": {
+        "tags": [
+          "Auditoria"
+        ],
+        "summary": "Consultar bitácora de auditoría paginada",
+        "description": "Permite filtrar y paginar el registro de auditoría HTTP y errores.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "pagina",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "registrosPorPagina",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          },
+          {
+            "name": "usuarioCi",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "codigoEstado",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Logs de auditoría retornados exitosamente"
+          },
+          "403": {
+            "description": "Permiso 'admin.auditoria.leer' requerido"
+          }
+        }
+      }
+    },
+    "/api/Auditoria/exportar": {
+      "get": {
+        "tags": [
+          "Auditoria"
+        ],
+        "summary": "Exportar bitácora a formato CSV",
+        "description": "Descarga directa de los logs en archivo CSV estructurado (UTF-8 con BOM).",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "usuarioCi",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "codigoEstado",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Archivo CSV descargable",
+            "content": {
+              "text/csv": {}
+            }
+          },
+          "403": {
+            "description": "Permiso 'admin.auditoria.exportar' requerido"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

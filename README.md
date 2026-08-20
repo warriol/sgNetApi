@@ -2,6 +2,7 @@
 Sistema de Gestión en .net, API backend/frontend solution.
 
 # Arquitectura
+```bash
 sgNetApi/                          <-- Raíz del Repositorio Git
 ├── .gitignore
 ├── .env
@@ -15,7 +16,8 @@ sgNetApi/                          <-- Raíz del Repositorio Git
         ├── sgNetApi.Application/  <-- Casos de uso, DTOs, Lógica de Negocio
         ├── sgNetApi.Domain/       <-- Entidades (Usuarios, Roles, Permisos)
         └── sgNetApi.Infrastructure/ <-- DbContext (EF Core + Postgres), Repositorios
-└── frontend/                       <-- 
+└── frontend/
+```bash
 
 # Requerimientos
 - docker desktop
@@ -66,6 +68,8 @@ dotnet add src/sgNetApi.Infrastructure/sgNetApi.Infrastructure.csproj package Sy
 dotnet add src/sgNetApi.Infrastructure/sgNetApi.Infrastructure.csproj package Microsoft.IdentityModel.Tokens
 dotnet add src/sgNetApi.Api/sgNetApi.Api.csproj package Swashbuckle.AspNetCore
 dotnet add src/sgNetApi.Api/sgNetApi.Api.csproj package Microsoft.OpenApi
+
+dotnet add src/sgNetApi.Infrastructure/sgNetApi.Infrastructure.csproj package Microsoft.Extensions.Hosting.Abstractions
 
 # utilizar .env
 dotnet add src/sgNetApi.Api/sgNetApi.Api.csproj package DotNetEnv
