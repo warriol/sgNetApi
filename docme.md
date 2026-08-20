@@ -312,3 +312,20 @@ dotnet sln add tests/sgNetApi.Tests/sgNetApi.Tests.csproj
 ## Permisos de auditoria
 1. Agregar los nuevos permisos de Auditoría al DataSeeder.cs
        - backend/src/sgNetApi.Infrastructure/Data/DataSeeder.cs (modificar)
+
+# Modulo de Administración
+1. RolesController (/api/Roles)
+       - DTOs Roles y Permisos
+       - GET /api/Roles: Retorna el listado de roles con la lista de permisos asignados a cada uno.
+       - POST /api/Roles: Crea un nuevo Rol y le asigna su lista inicial de permisos.
+       - PUT /api/Roles/{id}: Modifica el nombre de un rol y actualiza en lote sus permisos.
+2. PermisosController (/api/Permisos)
+       - GET /api/Permisos: Retorna el catálogo completo de permisos del sistema para que el frontend arme el árbol o matriz de checkboxes en la interfaz gráfica.
+3. Endpoints de Asignación en UsuariosController
+       - PUT /api/Usuarios/{ci}/roles-permisos: Permite al Administrador actualizar desde la ficha del usuario sus roles asignados (idsRoles) y sus permisos directos extra (idsPermisosDirectos).
+
+# Instrucciones para Importar en Postman
+1. Abre Postman.
+2. En la esquina superior izquierda, haz clic en el botón Import.
+3. Selecciona o arrastra el archivo sgNetApi_OpenAPI_v3.json.
+4. Postman creará automáticamente una colección estructurada por carpetas (Auth, Usuarios, Roles, Permisos, Auditoria) con los esquemas JSON de prueba cargados.
