@@ -1,0 +1,123 @@
+<div class="usuarios-page">
+  <!-- Toolbar de Búsqueda y Acciones -->
+  <div class="card mb-3">
+    <div class="toolbar-content">
+      <div class="search-group">
+        <input 
+          type="text" 
+          class="form-control" 
+          placeholder="Buscar por CI, Nombre, Apellido o Correo..." 
+          [(ngModel)]="filtroTexto"
+          (keyup.enter)="aplicarFiltro()"
+        />
+        <button class="btn btn-secondary" (click)="aplicarFiltro()">Filtrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabla Paginada de Usuarios -->
+  <div class="table-responsive">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>CI / Usuario</th>
+          <th>Grado & Escalafón</th>
+          <th>Nombre Completo</th>
+          <th>Correo Institucional</th>
+          <th>Roles Asignados</th>
+          <th>Estado</th>
+          <th class="text-end">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let usr of usuariosFiltrados">
+          <td><strong>{{ usr.ci }}</strong></td>
+          <td>{{ usr.grado || '-' }} ({{ usr.escalafon || '-' }})</td>
+          <td>{{ usr.nombre }} {{ usr.apellido }}</td>
+          <td>{{ usr.correo }}</td>
+          <td>
+            <span *ngFor="let rol of usr.roles" class="badge badge-role me-1">{{ rol }}</span>
+          </td>
+          <td>
+            <span class="badge" [ngClass]="usr.habilitado ? 'badge-success' : 'badge-danger'">
+              {{ usr.habilitado ? 'Habilitado' : 'Bloqueado' }}
+            </span>
+          </td>
+          <td class="text-end">
+            <button class="btn btn-sm btn-secondary me-1" (click)="abrirModalEditarRoles(usr)">
+              Roles/Permisos
+            </button>
+            <button 
+              class="btn btn-sm" 
+              [ngClass]="usr.habilitado ? 'btn-danger' : 'btn-success'"
+              (click)="toggleEstado(usr)"
+            >
+              {{ usr.habilitado ? 'Bloquear' : 'Desbloquear' }}
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="usuariosFiltrados.length === 0 && !cargando">
+          <td colspan="7" class="text-center py-3">No se encontraron usuarios que coincidan con la búsqueda.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Modal de Edición de Roles y Permisos Directos -->
+  <div class="modal-overlay" *ngIf="mostrarModalRoles">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3>Editar Accesos del Usuario (CI: {{ usuarioSeleccionado?.ci }})</h3>
+        <button class="btn-close" (click)="cerrarModal()">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Nombre Funcionario:</label>
+          <input type="text" class="form-control" [value]="usuarioSeleccionado?.nombre + ' ' + usuarioSeleccionado?.apellido" readonly />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Correo Institucional:</label>
+          <input type="text" class="form-control" [value]="usuarioSeleccionado?.correo" readonly />
+        </div>
+
+        <!-- Selección de Roles -->
+        <div class="form-group full-width mt-3">
+          <label class="form-label fw-bold">1. Seleccionar Roles:</label>
+          <div class="d-flex flex-wrap gap-2">
+            <label *ngFor="let rol of catalogoRoles" class="checkbox-card">
+              <input 
+                type="checkbox" 
+                [checked]="idsRolesSeleccionados.includes(rol.idRol)" 
+                (change)="toggleRol(rol.idRol)" 
+              />
+              <strong class="ms-1">{{ rol.nombre }}</strong>
+            </label>
+          </div>
+        </div>
+
+        <!-- Selección de Permisos Directos -->
+        <div class="form-group full-width mt-3">
+          <label class="form-label fw-bold">2. Permisos Directos Adicionales (Excepciones):</label>
+          <div class="permissions-grid">
+            <label *ngFor="let perm of catalogoPermisos" class="checkbox-card">
+              <input 
+                type="checkbox" 
+                [checked]="idsPermisosDirectos.includes(perm.idPermiso)" 
+                (change)="togglePermisoDirecto(perm.idPermiso)" 
+              />
+              <span class="perm-name ms-1">{{ perm.nombre }}</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="cerrarModal()">Cancelar</button>
+        <button class="btn btn-primary" (click)="guardarRolesPermisos()" [disabled]="guardandoModal">
+          {{ guardandoModal ? 'Guardando...' : 'Guardar Cambios' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

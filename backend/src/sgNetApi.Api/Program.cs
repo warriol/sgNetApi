@@ -108,6 +108,18 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+// 1. Configurar política de CORS para permitir peticiones desde el Frontend de Angular
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins("http://localhost:4200") // URL de tu app Angular
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
+
 var app = builder.Build();
 
 // 6. Ejecutar DataSeeder al arrancar
@@ -128,6 +140,9 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "sgNetApi v1");
     });
 }
+
+// Activar CORS (Debe ir estrictamente antes de Authentication y Authorization)
+app.UseCors("AllowFrontend");
 
 app.UseAuthentication();
 app.UseAuthorization();

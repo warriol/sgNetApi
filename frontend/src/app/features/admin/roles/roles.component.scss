@@ -1,0 +1,62 @@
+$primary-navy: #0f172a;
+$border-color: #e2e8f0;
+
+.roles-page {
+  .roles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.25rem;
+
+    .rol-card {
+      background: #fff;
+      border: 1px solid $border-color;
+      border-radius: 8px;
+      padding: 1.25rem;
+
+      .rol-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid $border-color;
+        padding-bottom: 0.75rem;
+        margin-bottom: 0.75rem;
+
+        h4 { margin: 0; color: $primary-navy; }
+      }
+
+      .permisos-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+        margin-top: 0.5rem;
+
+        .badge-permiso {
+          background: #f1f5f9;
+          color: #334155;
+          border: 1px solid $border-color;
+          padding: 2px 8px;
+          border-radius: 4px;
+          font-size: 0.75rem;
+        }
+      }
+    }
+  }
+
+  .permisos-selector {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid $border-color;
+    padding: 0.5rem;
+    border-radius: 6px;
+
+    .checkbox-card {
+      display: flex;
+      gap: 0.5rem;
+      align-items: flex-start;
+      font-size: 0.85rem;
+    }
+  }
+}

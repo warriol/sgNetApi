@@ -356,11 +356,13 @@ dotnet sln add tests/sgNetApi.Tests/sgNetApi.Tests.csproj
 2. Crear auditoria.component
        - src/app/features/admin/auditoria/auditoria.component.ts
        - src/app/features/admin/auditoria/auditoria.component.html
+       - src/app/features/admin/auditoria/auditoria.component.scss
 
 # Crear componente Roles
 1. Crear componente roles.component
        - src/app/features/admin/roles/roles.component.ts
        - src/app/features/admin/roles/roles.component.html
+       - src/app/features/admin/roles/roles.component.scss
 
 # Instalar Dependencia Node en Frontend (/frontend)
 1. Inicializar Angual (J:\Docker\net\sgNetApi\frontend)
@@ -368,3 +370,6 @@ dotnet sln add tests/sgNetApi.Tests/sgNetApi.Tests.csproj
        - npx @angular/cli new sgNetFrontend --directory . --style scss --ssr false --skip-git
 2. Si este comando da error, en una terminal con privilegios ejecuta: Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
        - npm install
+
+# Solucionar CORS
+1. Configurar CORS en backend/src/sgNetApi.Api/Program.cs

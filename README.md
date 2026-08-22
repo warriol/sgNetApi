@@ -102,11 +102,16 @@ dotnet add src/sgNetApi.Api/sgNetApi.Api.csproj package DotNetEnv
 # Verificar
 dotnet build
 
-# Ejecutar
+# Ejecutar BACKEND
 dotnet run --project src/sgNetApi.Api/sgNetApi.Api.csproj 
 
 # Swagger
 http://localhost:5283/swagger/index.html
+
+# Ejecutar FRONTEND
+npx ng serve
+
+http://localhost:4200/
 
 ```
 
