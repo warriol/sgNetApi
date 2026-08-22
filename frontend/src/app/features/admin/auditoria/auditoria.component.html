@@ -1,0 +1,77 @@
+<div class="auditoria-page">
+  <!-- Toolbar de Filtros y Exportación -->
+  <div class="card mb-3">
+    <div class="filter-toolbar">
+      <div class="inputs-group">
+        <input 
+          type="text" 
+          class="form-control" 
+          placeholder="Filtrar por Cédula (ej: 43791806)" 
+          [(ngModel)]="filtroUsuarioCi"
+          (keyup.enter)="buscar()"
+        />
+        <input 
+          type="number" 
+          class="form-control" 
+          placeholder="Código HTTP (ej: 200, 403, 500)" 
+          [(ngModel)]="filtroCodigoEstado"
+          (keyup.enter)="buscar()"
+        />
+        <button class="btn btn-primary" (click)="buscar()">Buscar</button>
+        <button class="btn btn-secondary" (click)="limpiarFiltros()">Limpiar</button>
+      </div>
+
+      <button class="btn btn-success" (click)="exportarReporteCsv()" [disabled]="exportando">
+        {{ exportando ? 'Generando CSV...' : 'Exportar CSV' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Tabla de Auditoría HTTP -->
+  <div class="table-container">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Fecha / Hora</th>
+          <th>Usuario (CI)</th>
+          <th>IP Origen</th>
+          <th>Método</th>
+          <th>Ruta Endpoint</th>
+          <th>Estado</th>
+          <th>Duración</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let log of logs">
+          <td>{{ log.fecha | date:'dd/MM/yyyy HH:mm:ss' }}</td>
+          <td><strong>{{ log.usuarioCi || 'ANÓNIMO' }}</strong></td>
+          <td><code>{{ log.ipOrigen }}</code></td>
+          <td>
+            <span class="badge" [ngClass]="'badge-' + log.metodoHttp.toLowerCase()">
+              {{ log.metodoHttp }}
+            </span>
+          </td>
+          <td><code>{{ log.ruta }}</code></td>
+          <td>
+            <span class="badge" [ngClass]="log.codigoEstado < 400 ? 'badge-200' : 'badge-error'">
+              {{ log.codigoEstado }}
+            </span>
+          </td>
+          <td>{{ log.duracionMs }} ms</td>
+        </tr>
+        <tr *ngIf="logs.length === 0 && !cargando">
+          <td colspan="7" class="text-center py-3">No se encontraron registros de auditoría.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Paginador -->
+  <div class="pagination-footer mt-3" *ngIf="totalPaginas > 1">
+    <span>Página {{ paginaActual }} de {{ totalPaginas }} (Total: {{ totalRegistros }} registros)</span>
+    <div class="btn-group">
+      <button class="btn btn-sm btn-secondary" [disabled]="paginaActual === 1" (click)="cambiarPagina(paginaActual - 1)">Anterior</button>
+      <button class="btn btn-sm btn-secondary" [disabled]="paginaActual === totalPaginas" (click)="cambiarPagina(paginaActual + 1)">Siguiente</button>
+    </div>
+  </div>
+</div>
