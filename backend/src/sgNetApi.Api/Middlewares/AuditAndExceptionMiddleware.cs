@@ -21,7 +21,7 @@ public class AuditAndExceptionMiddleware
     public async Task InvokeAsync(HttpContext context, IServiceProvider serviceProvider)
     {
         var cronometro = Stopwatch.StartNew();
-        string? excepcionTexto = null;
+        context.Request.EnableBuffering();
 
         try
         {
@@ -31,7 +31,6 @@ public class AuditAndExceptionMiddleware
         catch (Exception ex)
         {
             cronometro.Stop();
-            excepcionTexto = ex.ToString();
             _logger.LogError(ex, "Excepción no controlada en {Path}", context.Request.Path);
 
             // Manejar la respuesta de error de forma limpia para el cliente
@@ -44,8 +43,32 @@ public class AuditAndExceptionMiddleware
             // Omitir el registro automático de llamadas a Swagger UI para no saturar la BD
             if (!context.Request.Path.StartsWithSegments("/swagger"))
             {
-                await RegistrarAuditoriaAsync(context, serviceProvider, cronometro.ElapsedMilliseconds, excepcionTexto);
+                await RegistrarAuditoriaAsync(context, serviceProvider, cronometro.ElapsedMilliseconds, await LeerPayloadAsync(context));
             }
+        }
+    }
+
+    private static async Task<string?> LeerPayloadAsync(HttpContext context)
+    {
+        if (context.Request.ContentLength is null or 0 || context.Request.ContentType is null || !context.Request.ContentType.Contains("json", StringComparison.OrdinalIgnoreCase))
+            return null;
+
+        context.Request.Body.Position = 0;
+        using var reader = new StreamReader(context.Request.Body, leaveOpen: true);
+        var payload = await reader.ReadToEndAsync();
+        context.Request.Body.Position = 0;
+
+        try
+        {
+            using var document = JsonDocument.Parse(payload);
+            var sanitized = new Dictionary<string, object?>();
+            foreach (var property in document.RootElement.EnumerateObject())
+                sanitized[property.Name] = property.Name.Contains("password", StringComparison.OrdinalIgnoreCase) ? "***" : property.Value.ToString();
+            return JsonSerializer.Serialize(sanitized);
+        }
+        catch (JsonException)
+        {
+            return null;
         }
     }
 
@@ -69,7 +92,7 @@ public class AuditAndExceptionMiddleware
         HttpContext context, 
         IServiceProvider serviceProvider, 
         long tiempoMs, 
-        string? excepcionTexto)
+        string? payloadRequest)
     {
         try
         {
@@ -77,22 +100,21 @@ public class AuditAndExceptionMiddleware
             using var scope = serviceProvider.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-            string usuarioCi = context.User.FindFirstValue(ClaimTypes.NameIdentifier) 
-                               ?? context.User.FindFirstValue("ci") 
-                               ?? "ANONIMO";
+            string? usuarioNombreUsuario = context.User.FindFirstValue(ClaimTypes.NameIdentifier)
+                               ?? context.User.FindFirstValue("NombreUsuario");
 
             string ipOrigen = context.Connection.RemoteIpAddress?.ToString() ?? "0.0.0.0";
 
             var log = new AuditoriaLog
             {
                 Fecha = DateTime.UtcNow,
-                UsuarioCi = usuarioCi,
+                UsuarioNombreUsuario = usuarioNombreUsuario,
                 IpOrigen = ipOrigen,
                 MetodoHttp = context.Request.Method,
                 Ruta = context.Request.Path,
                 CodigoEstado = context.Response.StatusCode,
-                TiempoEjecucionMs = tiempoMs,
-                Excepcion = excepcionTexto
+                DuracionMs = tiempoMs,
+                PayloadRequest = payloadRequest
             };
 
             dbContext.AuditoriaLogs.Add(log);

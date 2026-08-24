@@ -58,6 +58,9 @@
                 </span>
               </td>
               <td class="text-end pe-3">
+                <button class="btn btn-sm btn-outline-primary me-1" (click)="abrirModalEditar(usr)">
+                  Modificar
+                </button>
                 <button class="btn btn-sm btn-outline-secondary me-1" (click)="abrirModalEditarRoles(usr)">
                   Roles/Permisos
                 </button>
@@ -98,12 +101,28 @@
           <form class="row g-3">
             <div class="col-md-6">
               <label class="form-label fw-bold">Cédula de Identidad</label>
-              <input type="number" class="form-control" [(ngModel)]="nuevoUsuario.ci" name="ci" placeholder="Ej: 43791806" />
+              <input type="text" inputmode="numeric" maxlength="9" pattern="[0-9]{8,9}" class="form-control"
+                [(ngModel)]="nuevoUsuario.ci" name="ci" placeholder="Ej: 043791806"
+                (ngModelChange)="actualizarIdentidad()" />
             </div>
 
             <div class="col-md-6">
               <label class="form-label fw-bold">Nombre de Usuario (Login)</label>
-              <input type="text" class="form-control" [(ngModel)]="nuevoUsuario.nombreUsuario" name="nombreUsuario" placeholder="Ej: warriola" />
+              <input type="text" class="form-control" [(ngModel)]="nuevoUsuario.nombreUsuario" name="nombreUsuario"
+                placeholder="Ej: pasaporte123" [readonly]="nacionalidadUruguayaSeleccionada" />
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Nacionalidad</label>
+              <select class="form-select" [(ngModel)]="nuevoUsuario.idNacionalidad" name="idNacionalidad" (ngModelChange)="actualizarIdentidad()">
+                <option [ngValue]="null">Seleccione...</option>
+                <option *ngFor="let nacionalidad of catalogos?.nacionalidades" [ngValue]="nacionalidad.idNacionalidad">{{ nacionalidad.nombre }}</option>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Fecha de nacimiento</label>
+              <input type="date" class="form-control" [(ngModel)]="nuevoUsuario.fechaNacimiento" name="fechaNacimiento" />
             </div>
 
             <div class="col-md-6">
@@ -128,12 +147,35 @@
 
             <div class="col-md-6">
               <label class="form-label fw-bold">Grado</label>
-              <input type="text" class="form-control" [(ngModel)]="nuevoUsuario.grado" name="grado" placeholder="Ej: Crio. Gral." />
+              <select class="form-select" [(ngModel)]="nuevoUsuario.idGrado" name="idGrado">
+                <option [ngValue]="null">Seleccione...</option>
+                <option *ngFor="let grado of catalogos?.grados" [ngValue]="grado.idGrado">{{ grado.texto }}</option>
+              </select>
             </div>
 
             <div class="col-md-6">
               <label class="form-label fw-bold">Escalafón</label>
-              <input type="text" class="form-control" [(ngModel)]="nuevoUsuario.escalafon" name="escalafon" placeholder="Ej: PT" />
+              <select class="form-select" [(ngModel)]="nuevoUsuario.idEscalafon" name="idEscalafon">
+                <option [ngValue]="null">Seleccione...</option>
+                <option *ngFor="let escalafon of catalogos?.escalafones" [ngValue]="escalafon.idEscalafon">{{ escalafon.nombre }}</option>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Unidad Ejecutora</label>
+              <select class="form-select" [(ngModel)]="nuevoUsuario.idUuee" name="idUuee" (ngModelChange)="actualizarDependencias()">
+                <option [ngValue]="null">Seleccione...</option>
+                <option *ngFor="let uuee of catalogos?.unidadesEjecutoras" [ngValue]="uuee.idUuee">{{ uuee.nombre }}</option>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Dependencia</label>
+              <select class="form-select" [(ngModel)]="nuevoUsuario.idDependencia" name="idDependencia"
+                [disabled]="!nuevoUsuario.idUuee || !dependenciasFiltradas.length">
+                <option [ngValue]="null">Seleccione...</option>
+                <option *ngFor="let dependencia of dependenciasFiltradas" [ngValue]="dependencia.idDependencia">{{ dependencia.nombre }}</option>
+              </select>
             </div>
           </form>
         </div>
@@ -142,6 +184,106 @@
           <button type="button" class="btn btn-secondary" (click)="cerrarModalCrear()">Cancelar</button>
           <button type="button" class="btn btn-primary px-4" (click)="guardarNuevoUsuario()" [disabled]="guardandoCrear">
             {{ guardandoCrear ? 'Guardando...' : 'Crear Usuario' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de edición: CI y NombreUsuario son inmutables -->
+  <div class="modal fade show d-block" *ngIf="mostrarModalEditar" style="background: rgba(0,0,0,0.5);">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content shadow-lg border-0">
+        <div class="modal-header bg-dark text-white">
+          <h5 class="modal-title fw-bold">Modificar Usuario</h5>
+          <button type="button" class="btn-close btn-close-white" (click)="cerrarModalEditar()"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div class="alert alert-danger" *ngIf="mensajeErrorEditar">{{ mensajeErrorEditar }}</div>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Cédula de Identidad</label>
+              <input class="form-control bg-light" [value]="usuarioSeleccionado?.ci || usuarioSeleccionado?.nombreUsuario" readonly />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Nombre de Usuario</label>
+              <input class="form-control bg-light" [value]="usuarioSeleccionado?.nombreUsuario" readonly />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Nombre</label>
+              <input class="form-control" [(ngModel)]="usuarioEditado.nombre" name="editarNombre" />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Apellido</label>
+              <input class="form-control" [(ngModel)]="usuarioEditado.apellido" name="editarApellido" />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Correo Institucional</label>
+              <input type="email" class="form-control" [(ngModel)]="usuarioEditado.correo" name="editarCorreo" />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Fecha de nacimiento</label>
+              <input type="date" class="form-control" [(ngModel)]="usuarioEditado.fechaNacimiento" name="editarFechaNacimiento" />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Nacionalidad</label>
+              <select class="form-select" [(ngModel)]="usuarioEditado.idNacionalidad" name="editarNacionalidad">
+                <option [ngValue]="null">Seleccione...</option>
+                <option *ngFor="let nacionalidad of catalogos?.nacionalidades" [ngValue]="nacionalidad.idNacionalidad">{{ nacionalidad.nombre }}</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Celular</label>
+              <input class="form-control" [(ngModel)]="usuarioEditado.celular" name="editarCelular" />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Estado civil</label>
+              <select class="form-select" [(ngModel)]="usuarioEditado.idEstadoCivil" name="editarEstadoCivil">
+                <option [ngValue]="null">Seleccione...</option>
+                <option *ngFor="let estado of catalogos?.estadosCiviles" [ngValue]="estado.id">{{ estado.nombre }}</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Profesión</label>
+              <select class="form-select" [(ngModel)]="usuarioEditado.idProfesion" name="editarProfesion">
+                <option [ngValue]="null">Seleccione...</option>
+                <option *ngFor="let profesion of catalogos?.profesiones" [ngValue]="profesion.id">{{ profesion.nombre }}</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Grado</label>
+              <select class="form-select" [(ngModel)]="usuarioEditado.idGrado" name="editarGrado">
+                <option [ngValue]="null">Seleccione...</option>
+                <option *ngFor="let grado of catalogos?.grados" [ngValue]="grado.idGrado">{{ grado.texto }}</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Escalafón</label>
+              <select class="form-select" [(ngModel)]="usuarioEditado.idEscalafon" name="editarEscalafon">
+                <option [ngValue]="null">Seleccione...</option>
+                <option *ngFor="let escalafon of catalogos?.escalafones" [ngValue]="escalafon.idEscalafon">{{ escalafon.nombre }}</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Unidad Ejecutora</label>
+              <select class="form-select" [(ngModel)]="usuarioEditado.idUuee" name="editarUuee" (ngModelChange)="actualizarDependenciasEdicion()">
+                <option [ngValue]="null">Seleccione...</option>
+                <option *ngFor="let uuee of catalogos?.unidadesEjecutoras" [ngValue]="uuee.idUuee">{{ uuee.nombre }}</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Dependencia</label>
+              <select class="form-select" [(ngModel)]="usuarioEditado.idDependencia" name="editarDependencia" [disabled]="!usuarioEditado.idUuee || !dependenciasEdicion.length">
+                <option [ngValue]="null">Seleccione...</option>
+                <option *ngFor="let dependencia of dependenciasEdicion" [ngValue]="dependencia.idDependencia">{{ dependencia.nombre }}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-secondary" (click)="cerrarModalEditar()">Cancelar</button>
+          <button type="button" class="btn btn-primary" (click)="guardarEdicion()" [disabled]="guardandoEditar">
+            {{ guardandoEditar ? 'Guardando...' : 'Guardar cambios' }}
           </button>
         </div>
       </div>

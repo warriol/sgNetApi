@@ -54,6 +54,14 @@ public class DataSeeder
 
         await _context.SaveChangesAsync();
 
+        if (!await _context.Nacionalidades.AnyAsync())
+        {
+            _context.Nacionalidades.AddRange(
+                new Nacionalidad { IdNacionalidad = 1, Nombre = "Uruguaya", CodigoIso = "UY", EsUruguaya = true },
+                new Nacionalidad { IdNacionalidad = 2, Nombre = "Argentina", CodigoIso = "AR", EsUruguaya = false });
+            await _context.SaveChangesAsync();
+        }
+
         if (!await _context.Dependencias.AnyAsync())
         {
             _context.Dependencias.Add(
@@ -77,7 +85,8 @@ public class DataSeeder
             new Permiso { IdPermiso = 4, Nombre = "admin.usuarios.eliminar", Descripcion = "Permite deshabilitar usuarios" },
             new Permiso { IdPermiso = 5, Nombre = "roles.administrar", Descripcion = "Permite gestionar roles y asignar permisos" },
             new Permiso { IdPermiso = 6, Nombre = "admin.auditoria.leer", Descripcion = "Consultar el historial de auditoría HTTP y logs" },
-            new Permiso { IdPermiso = 7, Nombre = "admin.auditoria.exportar", Descripcion = "Exportar logs de auditoría a formato CSV" }
+            new Permiso { IdPermiso = 7, Nombre = "admin.auditoria.exportar", Descripcion = "Exportar logs de auditoría a formato CSV" },
+                new Permiso { IdPermiso = 8, Nombre = "admin.catalogos.gestion", Descripcion = "Crear, modificar y eliminar catálogos institucionales" }
         };
 
         foreach (var permiso in permisosDeseados)
@@ -131,26 +140,26 @@ public class DataSeeder
         if (!await _context.Usuarios.AnyAsync())
         {
             // Generar Hash y Salt de la contraseña por defecto para el primer acceso
-            _passwordHasher.CrearPasswordHash("Admin.123456", out byte[] passwordHash, out byte[] passwordSalt);
+            string passwordHash = _passwordHasher.CrearPasswordHash("Admin.123456");
 
             var usuarioAdmin = new Usuario
             {
                 Ci = 43791806,
-                NombreUsuario = "43791806",
+                NombreUsuario = "043791806",
                 Nombre = "Wilson Denis",
                 Apellido = "Arriola",
                 Correo = "wilson.arriola@sgnet.com.uy",
-                Celular = 099000000,
+                Celular = "099000000",
                 PasswordHash = passwordHash,
-                PasswordSalt = passwordSalt,
                 IntentosFallidos = 0,
                 Habilitado = true,
                 ExpiradoPorInactividad = false,
-                Creado = DateTime.UtcNow,
+                FechaCreacion = DateTime.UtcNow,
+                FechaNacimiento = new DateOnly(1980, 1, 1),
+                IdNacionalidad = 1,
                 UltimoAcceso = DateTime.UtcNow,
                 IdGrado = 10,       // Comisario General
                 IdEscalafon = 3,   // Técnico Profesional
-                IdUuee = 1,
                 IdDependencia = 1
             };
 
@@ -160,7 +169,7 @@ public class DataSeeder
             // Asignar Rol Administrador al Usuario inicial
             _context.Set<UsuarioRol>().Add(new UsuarioRol
             {
-                UsuarioCi = usuarioAdmin.Ci,
+                NombreUsuario = usuarioAdmin.NombreUsuario,
                 IdRol = 1
             });
 
@@ -171,7 +180,7 @@ public class DataSeeder
                 TipoAccion = "CREACION_INICIAL",
                 Observaciones = "Usuario Administrador creado automáticamente por el sistema Seeder.",
                 RealizadoPor = "SISTEMA",
-                UsuarioCi = usuarioAdmin.Ci
+                UsuarioNombreUsuario = usuarioAdmin.NombreUsuario
             });
 
             // Registrar la primera contraseña en el historial de contraseñas
@@ -179,7 +188,7 @@ public class DataSeeder
             {
                 PasswordHash = passwordHash,
                 FechaCreacion = DateTime.UtcNow,
-                UsuarioCi = usuarioAdmin.Ci
+                UsuarioNombreUsuario = usuarioAdmin.NombreUsuario
             });
 
             await _context.SaveChangesAsync();

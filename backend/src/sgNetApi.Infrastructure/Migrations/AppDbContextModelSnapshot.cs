@@ -24,41 +24,43 @@ namespace sgNetApi.Infrastructure.Migrations
 
             modelBuilder.Entity("sgNetApi.Domain.Entities.AuditoriaLog", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<long>("IdLog")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("IdLog"));
 
                     b.Property<int>("CodigoEstado")
                         .HasColumnType("integer");
 
-                    b.Property<string>("Excepcion")
-                        .HasColumnType("text");
+                    b.Property<long>("DuracionMs")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("IpOrigen")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(45)
+                        .HasColumnType("character varying(45)");
 
                     b.Property<string>("MetodoHttp")
                         .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)");
+
+                    b.Property<string>("PayloadRequest")
                         .HasColumnType("text");
 
                     b.Property<string>("Ruta")
                         .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<string>("UsuarioNombreUsuario")
                         .HasColumnType("text");
 
-                    b.Property<long>("TiempoEjecucionMs")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("UsuarioCi")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
+                    b.HasKey("IdLog");
 
                     b.ToTable("AuditoriaLogs");
                 });
@@ -66,7 +68,10 @@ namespace sgNetApi.Infrastructure.Migrations
             modelBuilder.Entity("sgNetApi.Domain.Entities.Dependencia", b =>
                 {
                     b.Property<int>("IdDependencia")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdDependencia"));
 
                     b.Property<int>("IdUuee")
                         .HasColumnType("integer");
@@ -79,7 +84,7 @@ namespace sgNetApi.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("IdDependencia", "IdUuee");
+                    b.HasKey("IdDependencia");
 
                     b.HasIndex("IdUuee");
 
@@ -105,6 +110,26 @@ namespace sgNetApi.Infrastructure.Migrations
                     b.HasKey("IdEscalafon");
 
                     b.ToTable("Escalafones");
+                });
+
+            modelBuilder.Entity("sgNetApi.Domain.Entities.EstadoCivil", b =>
+                {
+                    b.Property<int>("IdEstadoCivil")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdEstadoCivil"));
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("IdEstadoCivil");
+
+                    b.HasIndex("Nombre")
+                        .IsUnique();
+
+                    b.ToTable("EstadosCiviles");
                 });
 
             modelBuilder.Entity("sgNetApi.Domain.Entities.Grado", b =>
@@ -142,16 +167,17 @@ namespace sgNetApi.Infrastructure.Migrations
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<byte[]>("PasswordHash")
+                    b.Property<string>("PasswordHash")
                         .IsRequired()
-                        .HasColumnType("bytea");
+                        .HasColumnType("text");
 
-                    b.Property<long>("UsuarioCi")
-                        .HasColumnType("bigint");
+                    b.Property<string>("UsuarioNombreUsuario")
+                        .IsRequired()
+                        .HasColumnType("character varying(50)");
 
                     b.HasKey("IdHistorialPassword");
 
-                    b.HasIndex("UsuarioCi");
+                    b.HasIndex("UsuarioNombreUsuario");
 
                     b.ToTable("HistorialesPasswords");
                 });
@@ -179,14 +205,45 @@ namespace sgNetApi.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<long>("UsuarioCi")
-                        .HasColumnType("bigint");
+                    b.Property<string>("UsuarioNombreUsuario")
+                        .IsRequired()
+                        .HasColumnType("character varying(50)");
 
                     b.HasKey("IdHistorial");
 
-                    b.HasIndex("UsuarioCi");
+                    b.HasIndex("UsuarioNombreUsuario");
 
                     b.ToTable("HistorialesUsuarios");
+                });
+
+            modelBuilder.Entity("sgNetApi.Domain.Entities.Nacionalidad", b =>
+                {
+                    b.Property<int>("IdNacionalidad")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdNacionalidad"));
+
+                    b.Property<string>("CodigoIso")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("EsUruguaya")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("IdNacionalidad");
+
+                    b.HasIndex("CodigoIso")
+                        .IsUnique();
+
+                    b.HasIndex("Nombre")
+                        .IsUnique();
+
+                    b.ToTable("Nacionalidades");
                 });
 
             modelBuilder.Entity("sgNetApi.Domain.Entities.Permiso", b =>
@@ -199,15 +256,40 @@ namespace sgNetApi.Infrastructure.Migrations
 
                     b.Property<string>("Descripcion")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.HasKey("IdPermiso");
+
+                    b.HasIndex("Nombre")
+                        .IsUnique();
+
+                    b.ToTable("Permisos");
+                });
+
+            modelBuilder.Entity("sgNetApi.Domain.Entities.Profesion", b =>
+                {
+                    b.Property<int>("IdProfesion")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdProfesion"));
 
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("IdPermiso");
+                    b.HasKey("IdProfesion");
 
-                    b.ToTable("Permisos");
+                    b.HasIndex("Nombre")
+                        .IsUnique();
+
+                    b.ToTable("Profesiones");
                 });
 
             modelBuilder.Entity("sgNetApi.Domain.Entities.Rol", b =>
@@ -218,11 +300,19 @@ namespace sgNetApi.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdRol"));
 
+                    b.Property<string>("Descripcion")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
                     b.Property<string>("Nombre")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.HasKey("IdRol");
+
+                    b.HasIndex("Nombre")
+                        .IsUnique();
 
                     b.ToTable("Roles");
                 });
@@ -265,39 +355,54 @@ namespace sgNetApi.Infrastructure.Migrations
 
             modelBuilder.Entity("sgNetApi.Domain.Entities.Usuario", b =>
                 {
-                    b.Property<long>("Ci")
-                        .HasColumnType("bigint");
+                    b.Property<string>("NombreUsuario")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("Apellido")
                         .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Celular")
                         .HasColumnType("text");
 
-                    b.Property<long>("Celular")
+                    b.Property<long?>("Ci")
                         .HasColumnType("bigint");
 
                     b.Property<string>("Correo")
                         .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("Creado")
-                        .HasColumnType("timestamp with time zone");
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
 
                     b.Property<bool>("ExpiradoPorInactividad")
                         .HasColumnType("boolean");
 
+                    b.Property<DateTime>("FechaCreacion")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateOnly>("FechaNacimiento")
+                        .HasColumnType("date");
+
                     b.Property<bool>("Habilitado")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("IdDependencia")
+                    b.Property<int?>("IdDependencia")
                         .HasColumnType("integer");
 
-                    b.Property<int>("IdEscalafon")
+                    b.Property<int?>("IdEscalafon")
                         .HasColumnType("integer");
 
-                    b.Property<int>("IdGrado")
+                    b.Property<int?>("IdEstadoCivil")
                         .HasColumnType("integer");
 
-                    b.Property<int>("IdUuee")
+                    b.Property<int?>("IdGrado")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("IdNacionalidad")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("IdProfesion")
                         .HasColumnType("integer");
 
                     b.Property<int>("IntentosFallidos")
@@ -305,48 +410,52 @@ namespace sgNetApi.Infrastructure.Migrations
 
                     b.Property<string>("Nombre")
                         .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<string>("Telefono")
                         .HasColumnType("text");
-
-                    b.Property<string>("NombreUsuario")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<byte[]>("PasswordHash")
-                        .IsRequired()
-                        .HasColumnType("bytea");
-
-                    b.Property<byte[]>("PasswordSalt")
-                        .IsRequired()
-                        .HasColumnType("bytea");
 
                     b.Property<DateTime?>("UltimoAcceso")
                         .HasColumnType("timestamp with time zone");
 
-                    b.HasKey("Ci");
+                    b.HasKey("NombreUsuario");
+
+                    b.HasIndex("Ci")
+                        .IsUnique();
 
                     b.HasIndex("Correo")
                         .IsUnique();
 
+                    b.HasIndex("IdDependencia");
+
                     b.HasIndex("IdEscalafon");
+
+                    b.HasIndex("IdEstadoCivil");
 
                     b.HasIndex("IdGrado");
 
-                    b.HasIndex("IdUuee");
+                    b.HasIndex("IdNacionalidad");
 
-                    b.HasIndex("IdDependencia", "IdUuee");
+                    b.HasIndex("IdProfesion");
 
                     b.ToTable("Usuarios");
                 });
 
             modelBuilder.Entity("sgNetApi.Domain.Entities.UsuarioPermiso", b =>
                 {
-                    b.Property<long>("UsuarioCi")
-                        .HasColumnType("bigint");
+                    b.Property<string>("NombreUsuario")
+                        .HasColumnType("character varying(50)");
 
                     b.Property<int>("IdPermiso")
                         .HasColumnType("integer");
 
-                    b.HasKey("UsuarioCi", "IdPermiso");
+                    b.HasKey("NombreUsuario", "IdPermiso");
 
                     b.HasIndex("IdPermiso");
 
@@ -355,13 +464,13 @@ namespace sgNetApi.Infrastructure.Migrations
 
             modelBuilder.Entity("sgNetApi.Domain.Entities.UsuarioRol", b =>
                 {
-                    b.Property<long>("UsuarioCi")
-                        .HasColumnType("bigint");
+                    b.Property<string>("NombreUsuario")
+                        .HasColumnType("character varying(50)");
 
                     b.Property<int>("IdRol")
                         .HasColumnType("integer");
 
-                    b.HasKey("UsuarioCi", "IdRol");
+                    b.HasKey("NombreUsuario", "IdRol");
 
                     b.HasIndex("IdRol");
 
@@ -383,8 +492,8 @@ namespace sgNetApi.Infrastructure.Migrations
                 {
                     b.HasOne("sgNetApi.Domain.Entities.Usuario", "Usuario")
                         .WithMany("HistorialPasswords")
-                        .HasForeignKey("UsuarioCi")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("UsuarioNombreUsuario")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Usuario");
@@ -394,8 +503,8 @@ namespace sgNetApi.Infrastructure.Migrations
                 {
                     b.HasOne("sgNetApi.Domain.Entities.Usuario", "Usuario")
                         .WithMany("Historiales")
-                        .HasForeignKey("UsuarioCi")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("UsuarioNombreUsuario")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Usuario");
@@ -422,37 +531,44 @@ namespace sgNetApi.Infrastructure.Migrations
 
             modelBuilder.Entity("sgNetApi.Domain.Entities.Usuario", b =>
                 {
+                    b.HasOne("sgNetApi.Domain.Entities.Dependencia", "Dependencia")
+                        .WithMany()
+                        .HasForeignKey("IdDependencia")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("sgNetApi.Domain.Entities.Escalafon", "Escalafon")
                         .WithMany()
-                        .HasForeignKey("IdEscalafon")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("IdEscalafon");
+
+                    b.HasOne("sgNetApi.Domain.Entities.EstadoCivil", "EstadoCivil")
+                        .WithMany()
+                        .HasForeignKey("IdEstadoCivil");
 
                     b.HasOne("sgNetApi.Domain.Entities.Grado", "Grado")
                         .WithMany()
-                        .HasForeignKey("IdGrado")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("IdGrado");
+
+                    b.HasOne("sgNetApi.Domain.Entities.Nacionalidad", "Nacionalidad")
+                        .WithMany("Usuarios")
+                        .HasForeignKey("IdNacionalidad")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("sgNetApi.Domain.Entities.UnidadEjecutora", "UnidadEjecutora")
+                    b.HasOne("sgNetApi.Domain.Entities.Profesion", "Profesion")
                         .WithMany()
-                        .HasForeignKey("IdUuee")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("sgNetApi.Domain.Entities.Dependencia", "Dependencia")
-                        .WithMany()
-                        .HasForeignKey("IdDependencia", "IdUuee")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("IdProfesion");
 
                     b.Navigation("Dependencia");
 
                     b.Navigation("Escalafon");
 
+                    b.Navigation("EstadoCivil");
+
                     b.Navigation("Grado");
 
-                    b.Navigation("UnidadEjecutora");
+                    b.Navigation("Nacionalidad");
+
+                    b.Navigation("Profesion");
                 });
 
             modelBuilder.Entity("sgNetApi.Domain.Entities.UsuarioPermiso", b =>
@@ -465,7 +581,7 @@ namespace sgNetApi.Infrastructure.Migrations
 
                     b.HasOne("sgNetApi.Domain.Entities.Usuario", "Usuario")
                         .WithMany("UsuarioPermisos")
-                        .HasForeignKey("UsuarioCi")
+                        .HasForeignKey("NombreUsuario")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -484,13 +600,18 @@ namespace sgNetApi.Infrastructure.Migrations
 
                     b.HasOne("sgNetApi.Domain.Entities.Usuario", "Usuario")
                         .WithMany("UsuarioRoles")
-                        .HasForeignKey("UsuarioCi")
+                        .HasForeignKey("NombreUsuario")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Rol");
 
                     b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("sgNetApi.Domain.Entities.Nacionalidad", b =>
+                {
+                    b.Navigation("Usuarios");
                 });
 
             modelBuilder.Entity("sgNetApi.Domain.Entities.Permiso", b =>

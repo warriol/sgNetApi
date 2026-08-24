@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <ProjectReference Include="..\sgNetApi.Application\sgNetApi.Application.csproj" />
     <ProjectReference Include="..\sgNetApi.Domain\sgNetApi.Domain.csproj" />
   </ItemGroup>

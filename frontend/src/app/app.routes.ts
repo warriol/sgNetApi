@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 import { LandingComponent } from './features/landing/landing.component';
 import { AdminShellComponent } from './features/admin/shell/admin-shell.component';
+import { catalogosGuard } from './core/guards/catalogos.guard';
 
 export const routes: Routes = [
   { path: '', component: LandingComponent },
@@ -30,6 +31,14 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/admin/roles/roles.component').then(
             (m) => m.RolesComponent
+          )
+      },
+      {
+        path: 'catalogos',
+        canActivate: [catalogosGuard],
+        loadComponent: () =>
+          import('./features/admin/catalogos/catalogos.component').then(
+            (m) => m.CatalogosComponent
           )
       },
       {

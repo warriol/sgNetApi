@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { UsuariosService, Usuario, Rol, Permiso } from '../../../core/services/usuarios.service';
-import { CrearUsuarioDto } from '../../../core/services/usuarios.service';
+import { UsuariosService, Usuario, Rol, Permiso, Catalogos, Dependencia, CrearUsuarioDto, EditarUsuarioDto } from '../../../core/services/usuarios.service';
 
 @Component({
   selector: 'app-usuarios',
@@ -20,6 +19,8 @@ export class UsuariosComponent implements OnInit {
   // Catálogos para la Modal
   catalogoRoles: Rol[] = [];
   catalogoPermisos: Permiso[] = [];
+  catalogos!: Catalogos;
+  dependenciasFiltradas: Dependencia[] = [];
 
   // Estado del Modal
   mostrarModalRoles: boolean = false;
@@ -28,31 +29,48 @@ export class UsuariosComponent implements OnInit {
   idsPermisosDirectos: number[] = [];
   guardandoModal: boolean = false;
   mostrarModalCrear: boolean = false;
+  mostrarModalEditar: boolean = false;
   guardandoCrear: boolean = false;
+  guardandoEditar: boolean = false;
   mensajeErrorCrear: string | null = null;
+  mensajeErrorEditar: string | null = null;
+  usuarioEditado!: EditarUsuarioDto;
+  dependenciasEdicion: Dependencia[] = [];
 
   nuevoUsuario: CrearUsuarioDto = {
-    ci: 0,
+    ci: null,
     nombreUsuario: '',
     nombre: '',
     apellido: '',
     correo: '',
     password: '',
-    grado: '',
-    escalafon: ''
+    fechaNacimiento: '',
+    idNacionalidad: null,
+    idEstadoCivil: null,
+    idProfesion: null,
+    idGrado: null,
+    idEscalafon: null,
+    idUuee: null,
+    idDependencia: null
   };
 
   abrirModalCrear(): void {
     this.mensajeErrorCrear = null;
     this.nuevoUsuario = {
-      ci: null as any,
+      ci: null,
       nombreUsuario: '',
       nombre: '',
       apellido: '',
       correo: '',
       password: '',
-      grado: '',
-      escalafon: ''
+      fechaNacimiento: '',
+      idNacionalidad: null,
+      idEstadoCivil: null,
+      idProfesion: null,
+      idGrado: null,
+      idEscalafon: null,
+      idUuee: null,
+      idDependencia: null
     };
     this.mostrarModalCrear = true;
   }
@@ -61,9 +79,65 @@ export class UsuariosComponent implements OnInit {
     this.mostrarModalCrear = false;
   }
 
+  abrirModalEditar(usuario: Usuario): void {
+    this.mensajeErrorEditar = null;
+    this.usuarioSeleccionado = usuario;
+    this.usuarioEditado = {
+      nombre: usuario.nombre,
+      apellido: usuario.apellido,
+      correo: usuario.correo,
+      celular: usuario.celular,
+      fechaNacimiento: usuario.fechaNacimiento ?? '',
+      idNacionalidad: usuario.idNacionalidad ?? null,
+      idEstadoCivil: usuario.idEstadoCivil ?? null,
+      idProfesion: usuario.idProfesion ?? null,
+      idGrado: usuario.idGrado ?? null,
+      idEscalafon: usuario.idEscalafon ?? null,
+      idUuee: this.catalogos?.dependencias.find((d) => d.idDependencia === usuario.idDependencia)?.idUuee ?? null,
+      idDependencia: usuario.idDependencia ?? null
+    };
+    this.actualizarDependenciasEdicion();
+    this.mostrarModalEditar = true;
+  }
+
+  cerrarModalEditar(): void {
+    this.mostrarModalEditar = false;
+    this.usuarioSeleccionado = null;
+  }
+
+  actualizarDependenciasEdicion(): void {
+    this.dependenciasEdicion = this.usuarioEditado?.idUuee && this.catalogos
+      ? this.catalogos.dependencias.filter((d) => d.idUuee === this.usuarioEditado.idUuee)
+      : [];
+    if (!this.dependenciasEdicion.some((d) => d.idDependencia === this.usuarioEditado?.idDependencia))
+      this.usuarioEditado.idDependencia = null;
+  }
+
+  guardarEdicion(): void {
+    if (!this.usuarioSeleccionado || !this.usuarioEditado.nombre || !this.usuarioEditado.apellido || !this.usuarioEditado.correo ||
+      !this.usuarioEditado.fechaNacimiento || !this.usuarioEditado.idNacionalidad) {
+      this.mensajeErrorEditar = 'Complete los campos obligatorios del usuario.';
+      return;
+    }
+
+    this.guardandoEditar = true;
+    this.usuariosService.editarUsuario(this.usuarioSeleccionado.nombreUsuario, this.usuarioEditado).subscribe({
+      next: () => {
+        this.guardandoEditar = false;
+        this.cerrarModalEditar();
+        this.cargarUsuarios();
+      },
+      error: (err) => {
+        this.guardandoEditar = false;
+        this.mensajeErrorEditar = err.error?.mensaje || 'Error al actualizar el usuario.';
+      }
+    });
+  }
+
   guardarNuevoUsuario(): void {
-    if (!this.nuevoUsuario.ci || !this.nuevoUsuario.nombre || !this.nuevoUsuario.correo) {
-      this.mensajeErrorCrear = 'Por favor complete los campos obligatorios (CI, Nombre, Correo).';
+    if (!this.nuevoUsuario.nombre || !this.nuevoUsuario.apellido || !this.nuevoUsuario.correo ||
+      !this.nuevoUsuario.fechaNacimiento || !this.nuevoUsuario.idNacionalidad) {
+      this.mensajeErrorCrear = 'Complete los campos obligatorios del usuario.';
       return;
     }
 
@@ -115,6 +189,37 @@ export class UsuariosComponent implements OnInit {
       next: (permisos) => (this.catalogoPermisos = permisos),
       error: (err) => console.error('Error al cargar permisos:', err)
     });
+
+    this.usuariosService.obtenerCatalogos().subscribe({
+      next: (catalogos) => {
+        this.catalogos = catalogos;
+        this.actualizarDependencias();
+      },
+      error: (err) => console.error('Error al cargar catálogos:', err)
+    });
+  }
+
+  actualizarDependencias(): void {
+    const idUuee = this.nuevoUsuario.idUuee;
+    this.dependenciasFiltradas = idUuee && this.catalogos
+      ? this.catalogos.dependencias.filter((d) => d.idUuee === idUuee)
+      : [];
+    if (!this.dependenciasFiltradas.some((d) => d.idDependencia === this.nuevoUsuario.idDependencia))
+      this.nuevoUsuario.idDependencia = null;
+  }
+
+  actualizarIdentidad(): void {
+    const nacionalidad = this.catalogos?.nacionalidades.find((n) => n.idNacionalidad === this.nuevoUsuario.idNacionalidad);
+    if (nacionalidad?.esUruguaya) {
+      this.nuevoUsuario.nombreUsuario = this.nuevoUsuario.ci?.toString() ?? '';
+    } else if (nacionalidad) {
+      this.nuevoUsuario.ci = null;
+      this.nuevoUsuario.nombreUsuario = this.nuevoUsuario.nombreUsuario.replace(/[^a-zA-Z0-9]/g, '');
+    }
+  }
+
+  get nacionalidadUruguayaSeleccionada(): boolean {
+    return this.catalogos?.nacionalidades.some((n) => n.idNacionalidad === this.nuevoUsuario.idNacionalidad && n.esUruguaya) ?? false;
   }
 
   aplicarFiltro(): void {
@@ -126,7 +231,8 @@ export class UsuariosComponent implements OnInit {
     const txt = this.filtroTexto.toLowerCase();
     this.usuariosFiltrados = this.listaUsuarios.filter(
       (u) =>
-        u.ci.toString().includes(txt) ||
+        (u.ci?.toString() ?? '').includes(txt) ||
+        u.nombreUsuario.toLowerCase().includes(txt) ||
         u.nombre.toLowerCase().includes(txt) ||
         u.apellido.toLowerCase().includes(txt) ||
         u.correo.toLowerCase().includes(txt)
@@ -135,7 +241,7 @@ export class UsuariosComponent implements OnInit {
 
   toggleEstado(usuario: Usuario): void {
     const nuevoEstado = !usuario.habilitado;
-    this.usuariosService.cambiarEstadoUsuario(usuario.ci, nuevoEstado).subscribe({
+    this.usuariosService.cambiarEstadoUsuario(usuario.nombreUsuario, nuevoEstado).subscribe({
       next: () => {
         usuario.habilitado = nuevoEstado;
         if (nuevoEstado) usuario.intentosFallidos = 0;
@@ -189,7 +295,7 @@ export class UsuariosComponent implements OnInit {
     };
 
     this.usuariosService
-      .actualizarRolesYPermisos(this.usuarioSeleccionado.ci, dto)
+      .actualizarRolesYPermisos(this.usuarioSeleccionado.nombreUsuario, dto)
       .subscribe({
         next: () => {
           this.guardandoModal = false;

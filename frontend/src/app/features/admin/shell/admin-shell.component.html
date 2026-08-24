@@ -20,6 +20,9 @@
           <a routerLink="/admin/roles" routerLinkActive="active" *ngIf="tienePermiso('roles.administrar')">
             Roles y Permisos
           </a>
+          <a routerLink="/admin/catalogos" routerLinkActive="active" *ngIf="tienePermiso('admin.catalogos.gestion')">
+            Gestión de Catálogos
+          </a>
           <a routerLink="/admin/auditoria" routerLinkActive="active" *ngIf="tienePermiso('admin.auditoria.leer')">
             Logs de Auditoría
           </a>

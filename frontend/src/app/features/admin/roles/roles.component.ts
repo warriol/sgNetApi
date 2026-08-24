@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UsuariosService, Rol, Permiso } from '../../../core/services/usuarios.service';
-import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-roles',
@@ -21,15 +20,13 @@ export class RolesComponent implements OnInit {
   modoEdicion: boolean = false;
   idRolEdicion: number | null = null;
   nombreRol: string = '';
+  descripcionRol: string = '';
   idsPermisosSeleccionados: number[] = [];
   guardando: boolean = false;
   mensajeError: string | null = null;
 
-  private apiUrl = 'http://localhost:5283/api/Roles';
-
   constructor(
-    private usuariosService: UsuariosService,
-    private http: HttpClient
+    private usuariosService: UsuariosService
   ) {}
 
   ngOnInit(): void {
@@ -69,6 +66,7 @@ export class RolesComponent implements OnInit {
     this.modoEdicion = false;
     this.idRolEdicion = null;
     this.nombreRol = '';
+    this.descripcionRol = '';
     this.idsPermisosSeleccionados = [];
     this.mensajeError = null;
     this.mostrarModal = true;
@@ -78,6 +76,7 @@ export class RolesComponent implements OnInit {
     this.modoEdicion = true;
     this.idRolEdicion = rol.idRol;
     this.nombreRol = rol.nombre;
+    this.descripcionRol = rol.descripcion ?? '';
     this.idsPermisosSeleccionados = rol.permisos.map((p) => p.idPermiso);
     this.mensajeError = null;
     this.mostrarModal = true;
@@ -86,6 +85,7 @@ export class RolesComponent implements OnInit {
   cerrarModal(): void {
     this.mostrarModal = false;
     this.nombreRol = '';
+    this.descripcionRol = '';
     this.idsPermisosSeleccionados = [];
   }
 
@@ -109,12 +109,13 @@ export class RolesComponent implements OnInit {
 
     const body = {
       nombre: this.nombreRol.trim(),
+      descripcion: this.descripcionRol.trim() || undefined,
       idsPermisos: this.idsPermisosSeleccionados
     };
 
     if (this.modoEdicion && this.idRolEdicion) {
       // PUT /api/Roles/{idRol}
-      this.http.put(`${this.apiUrl}/${this.idRolEdicion}`, body).subscribe({
+      this.usuariosService.actualizarRol(this.idRolEdicion, body).subscribe({
         next: () => {
           this.guardando = false;
           this.cerrarModal();
@@ -127,7 +128,7 @@ export class RolesComponent implements OnInit {
       });
     } else {
       // POST /api/Roles
-      this.http.post(this.apiUrl, body).subscribe({
+      this.usuariosService.crearRol(body).subscribe({
         next: () => {
           this.guardando = false;
           this.cerrarModal();

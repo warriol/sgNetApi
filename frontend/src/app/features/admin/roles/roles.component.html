@@ -26,6 +26,7 @@
           </button>
         </div>
         <div class="card-body">
+          <p class="text-muted small" *ngIf="rol.descripcion">{{ rol.descripcion }}</p>
           <span class="text-muted small fw-semibold d-block mb-2">
             Permisos Asignados ({{ rol.permisos.length }}):
           </span>
@@ -70,6 +71,12 @@
               placeholder="Ej: Supervisor de Operaciones" 
               [(ngModel)]="nombreRol" 
             />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-bold">Descripción</label>
+            <textarea class="form-control" rows="2" maxlength="255" [(ngModel)]="descripcionRol"
+              placeholder="Propósito del rol (opcional)"></textarea>
           </div>
 
           <div>

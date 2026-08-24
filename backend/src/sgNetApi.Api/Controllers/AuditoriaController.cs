@@ -36,7 +36,7 @@ public class AuditoriaController : ControllerBase
         // Aplicar Filtros Opcionales
         if (!string.IsNullOrWhiteSpace(filtro.UsuarioCi))
         {
-            query = query.Where(a => a.UsuarioCi.Contains(filtro.UsuarioCi));
+            query = query.Where(a => a.UsuarioNombreUsuario != null && a.UsuarioNombreUsuario.Contains(filtro.UsuarioCi));
         }
 
         if (filtro.FechaDesde.HasValue)
@@ -63,15 +63,15 @@ public class AuditoriaController : ControllerBase
             .Take(limitePorPagina)
             .Select(a => new AuditoriaLogDto
             {
-                Id = a.Id,
+                Id = a.IdLog,
                 Fecha = a.Fecha,
-                UsuarioCi = a.UsuarioCi,
+                UsuarioCi = a.UsuarioNombreUsuario,
                 IpOrigen = a.IpOrigen,
                 MetodoHttp = a.MetodoHttp,
                 Ruta = a.Ruta,
                 CodigoEstado = a.CodigoEstado,
-                TiempoEjecucionMs = a.TiempoEjecucionMs,
-                Excepcion = a.Excepcion
+                TiempoEjecucionMs = a.DuracionMs,
+                Excepcion = a.PayloadRequest
             })
             .ToListAsync();
 
@@ -98,7 +98,7 @@ public class AuditoriaController : ControllerBase
         // Aplicamos los mismos filtros de búsqueda que el listado general
         if (!string.IsNullOrWhiteSpace(filtro.UsuarioCi))
         {
-            query = query.Where(a => a.UsuarioCi.Contains(filtro.UsuarioCi));
+            query = query.Where(a => a.UsuarioNombreUsuario != null && a.UsuarioNombreUsuario.Contains(filtro.UsuarioCi));
         }
         if (filtro.FechaDesde.HasValue)
         {
@@ -125,11 +125,11 @@ public class AuditoriaController : ControllerBase
         {
             // Sanitizar campos de texto para evitar inyecciones CSV o roturas de filas por comas internas
             string rutaSanitizada = log.Ruta.Contains(",") ? $"\"{log.Ruta}\"" : log.Ruta;
-            string excepcionSanitizada = string.IsNullOrEmpty(log.Excepcion) 
+            string excepcionSanitizada = string.IsNullOrEmpty(log.PayloadRequest) 
                 ? "" 
-                : $"\"{log.Excepcion.Replace("\"", "\"\"").Replace("\r\n", " ").Replace("\n", " ")}\"";
+                : $"\"{log.PayloadRequest.Replace("\"", "\"\"").Replace("\r\n", " ").Replace("\n", " ")}\"";
 
-            csvBuilder.AppendLine($"{log.Id},{log.Fecha:yyyy-MM-dd HH:mm:ss},{log.UsuarioCi},{log.IpOrigen},{log.MetodoHttp},{rutaSanitizada},{log.CodigoEstado},{log.TiempoEjecucionMs},{excepcionSanitizada}");
+            csvBuilder.AppendLine($"{log.IdLog},{log.Fecha:yyyy-MM-dd HH:mm:ss},{log.UsuarioNombreUsuario},{log.IpOrigen},{log.MetodoHttp},{rutaSanitizada},{log.CodigoEstado},{log.DuracionMs},{excepcionSanitizada}");
         }
 
         // UTF-8 con BOM (Byte Order Mark) para que Microsoft Excel reconozca automáticamente las tildes y caracteres especiales en español

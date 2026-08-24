@@ -19,22 +19,22 @@ public class PasswordService : IPasswordService
 
     public async Task<(bool Exito, string Mensaje)> CambiarPasswordAsync(CambiarPasswordDto dto)
     {
-        var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Ci == dto.Ci);
+        var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.NombreUsuario == dto.NombreUsuario);
         if (usuario == null)
             return (false, "Usuario no encontrado.");
 
         // 1. Validar la contraseña actual
-        bool esActualValida = _passwordHasher.VerificarPasswordHash(dto.PasswordActual, usuario.PasswordHash, usuario.PasswordSalt);
+        bool esActualValida = _passwordHasher.VerificarPasswordHash(dto.PasswordActual, usuario.PasswordHash);
         if (!esActualValida)
             return (false, "La contraseña actual no es correcta.");
 
         // 2. Procesar el cambio con validación de historial de 5 contraseñas
-        return await AplicarCambioPasswordAsync(usuario, dto.PasswordNueva, usuario.Ci.ToString(), "CAMBIO_PASSWORD_USUARIO");
+        return await AplicarCambioPasswordAsync(usuario, dto.PasswordNueva, usuario.NombreUsuario, "CAMBIO_PASSWORD_USUARIO");
     }
 
     public async Task<(bool Exito, string Mensaje)> ResetearPasswordPorAdminAsync(ResetearPasswordAdminDto dto, string adminCi)
     {
-        var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Ci == dto.CiUsuario);
+        var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.NombreUsuario == dto.NombreUsuario);
         if (usuario == null)
             return (false, "Usuario no encontrado.");
 
@@ -45,7 +45,7 @@ public class PasswordService : IPasswordService
     {
         // 1. Obtener las últimas 5 contraseñas usadas de la tabla HistorialPassword
         var ultimasCincoClaves = await _context.HistorialesPasswords
-            .Where(h => h.UsuarioCi == usuario.Ci)
+            .Where(h => h.UsuarioNombreUsuario == usuario.NombreUsuario)
             .OrderByDescending(h => h.FechaCreacion)
             .Take(5)
             .ToListAsync();
@@ -54,18 +54,17 @@ public class PasswordService : IPasswordService
         foreach (var historial in ultimasCincoClaves)
         {
             // Usamos el Salt actual del usuario para verificar el hash almacenado en el historial
-            if (_passwordHasher.VerificarPasswordHash(passwordNueva, historial.PasswordHash, usuario.PasswordSalt))
+            if (_passwordHasher.VerificarPasswordHash(passwordNueva, historial.PasswordHash))
             {
                 return (false, "La nueva contraseña no puede coincidir con ninguna de las últimas 5 contraseñas utilizadas.");
             }
         }
 
         // 3. Generar el nuevo Hash y Salt
-        _passwordHasher.CrearPasswordHash(passwordNueva, out byte[] nuevoHash, out byte[] nuevoSalt);
+        string nuevoHash = _passwordHasher.CrearPasswordHash(passwordNueva);
 
         // Update de los campos en Usuario
         usuario.PasswordHash = nuevoHash;
-        usuario.PasswordSalt = nuevoSalt;
         usuario.ExpiradoPorInactividad = false;
         usuario.IntentosFallidos = 0;
 
@@ -74,7 +73,7 @@ public class PasswordService : IPasswordService
         {
             PasswordHash = nuevoHash,
             FechaCreacion = DateTime.UtcNow,
-            UsuarioCi = usuario.Ci
+            UsuarioNombreUsuario = usuario.NombreUsuario
         });
 
         // 5. Mapear la acción en HistorialUsuario (Auditoría)
@@ -84,7 +83,7 @@ public class PasswordService : IPasswordService
             TipoAccion = tipoAccion,
             Observaciones = $"Contraseña modificada exitosamente por {realizadoPor}",
             RealizadoPor = realizadoPor,
-            UsuarioCi = usuario.Ci
+            UsuarioNombreUsuario = usuario.NombreUsuario
         });
 
         await _context.SaveChangesAsync();

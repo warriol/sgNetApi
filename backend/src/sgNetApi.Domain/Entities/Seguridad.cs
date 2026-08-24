@@ -14,6 +14,7 @@ public class Rol
 {
     public int IdRol { get; set; }
     public string Nombre { get; set; } = string.Empty;
+    public string? Descripcion { get; set; }
 
     public ICollection<RolPermiso> RolPermisos { get; set; } = new List<RolPermiso>();
     public ICollection<UsuarioRol> UsuarioRoles { get; set; } = new List<UsuarioRol>();
@@ -30,7 +31,7 @@ public class RolPermiso
 
 public class UsuarioRol
 {
-    public long UsuarioCi { get; set; }
+    public string NombreUsuario { get; set; } = string.Empty;
     public Usuario Usuario { get; set; } = null!;
 
     public int IdRol { get; set; }
@@ -39,7 +40,7 @@ public class UsuarioRol
 
 public class UsuarioPermiso
 {
-    public long UsuarioCi { get; set; }
+    public string NombreUsuario { get; set; } = string.Empty;
     public Usuario Usuario { get; set; } = null!;
 
     public int IdPermiso { get; set; }

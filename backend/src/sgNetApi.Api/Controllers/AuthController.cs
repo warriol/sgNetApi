@@ -73,7 +73,7 @@ public class AuthController : ControllerBase
                         .ThenInclude(rp => rp.Permiso)
             .Include(u => u.UsuarioPermisos)
                 .ThenInclude(up => up.Permiso)
-            .FirstOrDefaultAsync(u => u.Ci == dto.Ci);
+            .FirstOrDefaultAsync(u => u.NombreUsuario == dto.NombreUsuario);
 
         if (usuario == null)
         {
@@ -92,7 +92,7 @@ public class AuthController : ControllerBase
         }
 
         // 3. Validar Hash de la Contraseña
-        bool esValido = _passwordHasher.VerificarPasswordHash(dto.Password, usuario.PasswordHash, usuario.PasswordSalt);
+        bool esValido = _passwordHasher.VerificarPasswordHash(dto.Password, usuario.PasswordHash);
 
         if (!esValido)
         {
@@ -108,7 +108,7 @@ public class AuthController : ControllerBase
                     TipoAccion = "BLOQUEO_INTENTOS",
                     Observaciones = "Cuenta bloqueada automáticamente tras 3 intentos fallidos de inicio de sesión.",
                     RealizadoPor = "SISTEMA",
-                    UsuarioCi = usuario.Ci
+                    UsuarioNombreUsuario = usuario.NombreUsuario
                 });
             }
 
@@ -125,8 +125,8 @@ public class AuthController : ControllerBase
             Fecha = DateTime.UtcNow,
             TipoAccion = "LOGIN_EXITOSO",
             Observaciones = "Inicio de sesión correcto.",
-            RealizadoPor = usuario.Ci.ToString(),
-            UsuarioCi = usuario.Ci
+            RealizadoPor = usuario.NombreUsuario,
+            UsuarioNombreUsuario = usuario.NombreUsuario
         });
 
         await _context.SaveChangesAsync();
@@ -150,7 +150,7 @@ public class AuthController : ControllerBase
         {
             Token = token,
             Expiracion = DateTime.UtcNow.AddHours(8),
-            Ci = usuario.Ci,
+            NombreUsuario = usuario.NombreUsuario,
             NombreCompleto = $"{usuario.Nombre} {usuario.Apellido}",
             Correo = usuario.Correo,
             Roles = roles,

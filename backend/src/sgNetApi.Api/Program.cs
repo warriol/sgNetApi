@@ -15,11 +15,15 @@ using sgNetApi.Infrastructure.Workers;
 var builder = WebApplication.CreateBuilder(args);
 
 // 1. Cargar variables de entorno desde .env
-var envPath = Path.Combine(Directory.GetCurrentDirectory(), "../../.env");
-if (File.Exists(envPath))
+var envPath = new[]
 {
+    Path.Combine(Directory.GetCurrentDirectory(), ".env"),
+    Path.Combine(Directory.GetCurrentDirectory(), "../.env"),
+    Path.Combine(Directory.GetCurrentDirectory(), "../../.env")
+}.Select(Path.GetFullPath).FirstOrDefault(File.Exists);
+
+if (envPath != null)
     Env.Load(envPath);
-}
 
 // 2. Configurar Conexión a PostgreSQL
 var host = Environment.GetEnvironmentVariable("POSTGRES_HOST") ?? "localhost";
@@ -125,6 +129,9 @@ var app = builder.Build();
 // 6. Ejecutar DataSeeder al arrancar
 using (var scope = app.Services.CreateScope())
 {
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await dbContext.Database.MigrateAsync();
+
     var seeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
     await seeder.SeedAsync();
 }

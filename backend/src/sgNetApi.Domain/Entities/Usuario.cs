@@ -2,16 +2,17 @@ namespace sgNetApi.Domain.Entities;
 
 public class Usuario
 {
-    public long Ci { get; set; } // PK: Cédula de Identidad
     public string NombreUsuario { get; set; } = string.Empty;
+    public long? Ci { get; set; }
     public string Nombre { get; set; } = string.Empty;
     public string Apellido { get; set; } = string.Empty;
     public string Correo { get; set; } = string.Empty;
-    public long Celular { get; set; }
+    public string? Celular { get; set; }
+    public string? Telefono { get; set; }
+    public DateOnly FechaNacimiento { get; set; }
 
     // Seguridad e Intentos
-    public byte[] PasswordHash { get; set; } = Array.Empty<byte>();
-    public byte[] PasswordSalt { get; set; } = Array.Empty<byte>();
+    public string PasswordHash { get; set; } = string.Empty;
     public int IntentosFallidos { get; set; } = 0;
 
     // Estados
@@ -19,21 +20,27 @@ public class Usuario
     public bool ExpiradoPorInactividad { get; set; } = false;
 
     // Fechas
-    public DateTime Creado { get; set; } = DateTime.UtcNow;
+    public DateTime FechaCreacion { get; set; } = DateTime.UtcNow;
     public DateTime? UltimoAcceso { get; set; }
 
     // Claves Foráneas (FKs)
-    public int IdGrado { get; set; }
-    public Grado Grado { get; set; } = null!;
+    public int IdNacionalidad { get; set; }
+    public Nacionalidad Nacionalidad { get; set; } = null!;
 
-    public int IdEscalafon { get; set; }
-    public Escalafon Escalafon { get; set; } = null!;
+    public int? IdEstadoCivil { get; set; }
+    public EstadoCivil? EstadoCivil { get; set; }
 
-    public int IdUuee { get; set; }
-    public UnidadEjecutora UnidadEjecutora { get; set; } = null!;
+    public int? IdProfesion { get; set; }
+    public Profesion? Profesion { get; set; }
 
-    public int IdDependencia { get; set; }
-    public Dependencia Dependencia { get; set; } = null!;
+    public int? IdGrado { get; set; }
+    public Grado? Grado { get; set; }
+
+    public int? IdEscalafon { get; set; }
+    public Escalafon? Escalafon { get; set; }
+
+    public int? IdDependencia { get; set; }
+    public Dependencia? Dependencia { get; set; }
 
     // Colecciones / Relaciones
     public ICollection<UsuarioRol> UsuarioRoles { get; set; } = new List<UsuarioRol>();
@@ -50,16 +57,16 @@ public class HistorialUsuario
     public string Observaciones { get; set; } = string.Empty;
     public string RealizadoPor { get; set; } = string.Empty;
 
-    public long UsuarioCi { get; set; }
+    public string UsuarioNombreUsuario { get; set; } = string.Empty;
     public Usuario Usuario { get; set; } = null!;
 }
 
 public class HistorialPassword
 {
     public long IdHistorialPassword { get; set; }
-    public byte[] PasswordHash { get; set; } = Array.Empty<byte>();
+    public string PasswordHash { get; set; } = string.Empty;
     public DateTime FechaCreacion { get; set; } = DateTime.UtcNow;
 
-    public long UsuarioCi { get; set; }
+    public string UsuarioNombreUsuario { get; set; } = string.Empty;
     public Usuario Usuario { get; set; } = null!;
 }

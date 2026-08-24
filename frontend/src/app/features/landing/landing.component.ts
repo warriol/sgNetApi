@@ -25,7 +25,7 @@ export class LandingComponent implements OnInit {
 
   ngOnInit(): void {
     this.loginForm = this.fb.group({
-      ci: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
+      nombreUsuario: ['', [Validators.required, Validators.pattern('^[0-9]{8,9}$')]],
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
   }

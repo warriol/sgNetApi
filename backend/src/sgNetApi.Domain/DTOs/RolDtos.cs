@@ -11,18 +11,21 @@ public class RolDetalleDto
 {
     public int IdRol { get; set; }
     public string Nombre { get; set; } = string.Empty;
+    public string? Descripcion { get; set; }
     public List<PermisoDto> Permisos { get; set; } = new();
 }
 
 public class CrearRolDto
 {
     public string Nombre { get; set; } = string.Empty;
+    public string? Descripcion { get; set; }
     public List<int> IdsPermisos { get; set; } = new();
 }
 
 public class EditarRolDto
 {
     public string Nombre { get; set; } = string.Empty;
+    public string? Descripcion { get; set; }
     public List<int> IdsPermisos { get; set; } = new();
 }
 
