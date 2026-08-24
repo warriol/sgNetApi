@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UsuariosService, Usuario, Rol, Permiso } from '../../../core/services/usuarios.service';
+import { CrearUsuarioDto } from '../../../core/services/usuarios.service';
 
 @Component({
   selector: 'app-usuarios',
@@ -26,6 +27,61 @@ export class UsuariosComponent implements OnInit {
   idsRolesSeleccionados: number[] = [];
   idsPermisosDirectos: number[] = [];
   guardandoModal: boolean = false;
+  mostrarModalCrear: boolean = false;
+  guardandoCrear: boolean = false;
+  mensajeErrorCrear: string | null = null;
+
+  nuevoUsuario: CrearUsuarioDto = {
+    ci: 0,
+    nombreUsuario: '',
+    nombre: '',
+    apellido: '',
+    correo: '',
+    password: '',
+    grado: '',
+    escalafon: ''
+  };
+
+  abrirModalCrear(): void {
+    this.mensajeErrorCrear = null;
+    this.nuevoUsuario = {
+      ci: null as any,
+      nombreUsuario: '',
+      nombre: '',
+      apellido: '',
+      correo: '',
+      password: '',
+      grado: '',
+      escalafon: ''
+    };
+    this.mostrarModalCrear = true;
+  }
+
+  cerrarModalCrear(): void {
+    this.mostrarModalCrear = false;
+  }
+
+  guardarNuevoUsuario(): void {
+    if (!this.nuevoUsuario.ci || !this.nuevoUsuario.nombre || !this.nuevoUsuario.correo) {
+      this.mensajeErrorCrear = 'Por favor complete los campos obligatorios (CI, Nombre, Correo).';
+      return;
+    }
+
+    this.guardandoCrear = true;
+    this.mensajeErrorCrear = null;
+
+    this.usuariosService.crearUsuario(this.nuevoUsuario).subscribe({
+      next: () => {
+        this.guardandoCrear = false;
+        this.cerrarModalCrear();
+        this.cargarUsuarios(); // Recarga la tabla de usuarios
+      },
+      error: (err) => {
+        this.guardandoCrear = false;
+        this.mensajeErrorCrear = err.error?.mensaje || 'Error al crear el usuario en el servidor.';
+      }
+    });
+  }
 
   constructor(private usuariosService: UsuariosService) {}
 

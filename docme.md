@@ -373,3 +373,6 @@ dotnet sln add tests/sgNetApi.Tests/sgNetApi.Tests.csproj
 
 # Solucionar CORS
 1. Configurar CORS en backend/src/sgNetApi.Api/Program.cs
+
+# Página de bienvenida
+       - src/app/features/admin/dashboard/dashboard.component.ts

@@ -16,6 +16,18 @@ export interface Usuario {
   roles: string[];
 }
 
+export interface CrearUsuarioDto {
+  ci: number;
+  nombreUsuario: string;
+  nombre: string;
+  apellido: string;
+  correo: string;
+  password?: string;
+  celular?: number;
+  grado?: string;
+  escalafon?: string;
+}
+
 export interface Rol {
   idRol: number;
   nombre: string;
@@ -43,6 +55,10 @@ export class UsuariosService {
 
   obtenerUsuarios(): Observable<Usuario[]> {
     return this.http.get<Usuario[]>(`${this.apiUrl}/Usuarios`);
+  }
+
+  crearUsuario(dto: CrearUsuarioDto): Observable<any> {
+    return this.http.post(`${this.apiUrl}/Usuarios`, dto);
   }
 
   obtenerUsuarioPorCi(ci: number): Observable<Usuario> {

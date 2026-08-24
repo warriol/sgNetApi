@@ -1,40 +1,8 @@
-$primary-navy: #0f172a;
-$accent-blue: #2563eb;
-$border-color: #e2e8f0;
+/* Ajustes mínimos de tabla */
+.table {
+  font-size: 0.875rem;
+}
 
-.auditoria-page {
-  .filter-toolbar {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    flex-wrap: wrap;
-
-    .inputs-group {
-      display: flex;
-      gap: 0.5rem;
-      flex: 1;
-    }
-  }
-
-  .table-container {
-    background: #ffffff;
-    border: 1px solid $border-color;
-    border-radius: 8px;
-    overflow-x: auto;
-  }
-
-  .data-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.85rem;
-
-    th { background: $primary-navy; color: #fff; padding: 0.75rem; text-align: left; }
-    td { padding: 0.75rem; border-bottom: 1px solid $border-color; }
-  }
-
-  .badge-get { background: #e0f2fe; color: #0369a1; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
-  .badge-post { background: #dcfce7; color: #15803d; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
-  .badge-put { background: #fef3c7; color: #b45309; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
-  .badge-200 { background: #dcfce7; color: #16a34a; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
-  .badge-error { background: #fee2e2; color: #dc2626; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
+code {
+  font-size: 0.8rem;
 }

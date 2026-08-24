@@ -11,13 +11,12 @@ import { AuthService } from '../../../core/services/auth.service';
   styleUrls: ['./admin-shell.component.scss']
 })
 export class AdminShellComponent implements OnInit {
-  sidebarColapsado = false;
+  rolesUsuario: string[] = [];
   permisosUsuario: string[] = [];
 
   usuarioActual = {
-    nombre: 'Funcionario Autenticado',
-    ci: '---',
-    correo: '---'
+    nombre: 'Funcionario',
+    ci: '---'
   };
 
   constructor(
@@ -30,12 +29,12 @@ export class AdminShellComponent implements OnInit {
     this.cargarDatosUsuario();
   }
 
-  tienePermiso(permiso: string): boolean {
-    return this.permisosUsuario.includes(permiso);
+  tieneRol(rol: string): boolean {
+    return this.rolesUsuario.includes(rol);
   }
 
-  toggleSidebar(): void {
-    this.sidebarColapsado = !this.sidebarColapsado;
+  tienePermiso(permiso: string): boolean {
+    return this.permisosUsuario.includes(permiso);
   }
 
   cerrarSesion(): void {
@@ -48,13 +47,17 @@ export class AdminShellComponent implements OnInit {
     if (token) {
       try {
         const payload = JSON.parse(atob(token.split('.')[1]));
+        
+        // Extraer Roles del JWT
+        const roles = payload.role || payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
+        this.rolesUsuario = Array.isArray(roles) ? roles : [roles];
+
         this.usuarioActual = {
           nombre: payload.name || 'Wilson Denis Arriola',
-          ci: payload.sub || payload.nameid || '43791806',
-          correo: payload.email || 'wilson.arriola@sgnet.com.uy'
+          ci: payload.sub || payload.nameid || '43791806'
         };
       } catch {
-        // En caso de error de decodificación mantiene valores por defecto
+        // Fallback en caso de error
       }
     }
   }

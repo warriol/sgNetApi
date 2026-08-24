@@ -1,77 +1,130 @@
-<div class="auditoria-page">
-  <!-- Toolbar de Filtros y Exportación -->
-  <div class="card mb-3">
-    <div class="filter-toolbar">
-      <div class="inputs-group">
-        <input 
-          type="text" 
-          class="form-control" 
-          placeholder="Filtrar por Cédula (ej: 43791806)" 
-          [(ngModel)]="filtroUsuarioCi"
-          (keyup.enter)="buscar()"
-        />
-        <input 
-          type="number" 
-          class="form-control" 
-          placeholder="Código HTTP (ej: 200, 403, 500)" 
-          [(ngModel)]="filtroCodigoEstado"
-          (keyup.enter)="buscar()"
-        />
-        <button class="btn btn-primary" (click)="buscar()">Buscar</button>
-        <button class="btn btn-secondary" (click)="limpiarFiltros()">Limpiar</button>
-      </div>
+<div class="container-fluid py-3">
 
-      <button class="btn btn-success" (click)="exportarReporteCsv()" [disabled]="exportando">
-        {{ exportando ? 'Generando CSV...' : 'Exportar CSV' }}
-      </button>
+  <!-- Toolbar de Filtros y Exportación -->
+  <div class="card shadow-sm border-0 mb-4">
+    <div class="card-body">
+      <div class="row g-3 align-items-center">
+        <!-- Campo Cédula -->
+        <div class="col-md-4 col-lg-3">
+          <label class="form-label text-muted small fw-bold mb-1">Usuario (CI)</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            placeholder="Ej: 43791806" 
+            [(ngModel)]="filtroUsuarioCi"
+            (keyup.enter)="buscar()"
+          />
+        </div>
+
+        <!-- Campo Código HTTP -->
+        <div class="col-md-3 col-lg-2">
+          <label class="form-label text-muted small fw-bold mb-1">Código HTTP</label>
+          <input 
+            type="number" 
+            class="form-control" 
+            placeholder="Ej: 200, 403, 500" 
+            [(ngModel)]="filtroCodigoEstado"
+            (keyup.enter)="buscar()"
+          />
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="col-md-5 col-lg-7 d-flex align-items-end justify-content-between flex-wrap gap-2 pt-2 pt-md-0">
+          <div class="d-flex gap-2">
+            <button class="btn btn-primary fw-semibold" (click)="buscar()">
+              Buscar
+            </button>
+            <button class="btn btn-outline-secondary" (click)="limpiarFiltros()">
+              Limpiar
+            </button>
+          </div>
+
+          <button class="btn btn-success fw-semibold" (click)="exportarReporteCsv()" [disabled]="exportando">
+            {{ exportando ? 'Generando CSV...' : 'Exportar CSV' }}
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 
   <!-- Tabla de Auditoría HTTP -->
-  <div class="table-container">
-    <table class="data-table">
-      <thead>
-        <tr>
-          <th>Fecha / Hora</th>
-          <th>Usuario (CI)</th>
-          <th>IP Origen</th>
-          <th>Método</th>
-          <th>Ruta Endpoint</th>
-          <th>Estado</th>
-          <th>Duración</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let log of logs">
-          <td>{{ log.fecha | date:'dd/MM/yyyy HH:mm:ss' }}</td>
-          <td><strong>{{ log.usuarioCi || 'ANÓNIMO' }}</strong></td>
-          <td><code>{{ log.ipOrigen }}</code></td>
-          <td>
-            <span class="badge" [ngClass]="'badge-' + log.metodoHttp.toLowerCase()">
-              {{ log.metodoHttp }}
-            </span>
-          </td>
-          <td><code>{{ log.ruta }}</code></td>
-          <td>
-            <span class="badge" [ngClass]="log.codigoEstado < 400 ? 'badge-200' : 'badge-error'">
-              {{ log.codigoEstado }}
-            </span>
-          </td>
-          <td>{{ log.duracionMs }} ms</td>
-        </tr>
-        <tr *ngIf="logs.length === 0 && !cargando">
-          <td colspan="7" class="text-center py-3">No se encontraron registros de auditoría.</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <div class="card shadow-sm border-0">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover table-striped align-middle mb-0">
+          <thead class="table-dark">
+            <tr>
+              <th>Fecha / Hora</th>
+              <th>Usuario (CI)</th>
+              <th>IP Origen</th>
+              <th>Método</th>
+              <th>Ruta Endpoint</th>
+              <th>Estado</th>
+              <th class="text-end pe-3">Duración</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let log of logs">
+              <td class="small">{{ log.fecha | date:'dd/MM/yyyy HH:mm:ss' }}</td>
+              <td class="fw-bold">{{ log.usuarioCi || 'ANÓNIMO' }}</td>
+              <td><code class="text-secondary">{{ log.ipOrigen }}</code></td>
+              <td>
+                <span 
+                  class="badge" 
+                  [ngClass]="{
+                    'bg-info text-dark': log.metodoHttp === 'GET',
+                    'bg-success': log.metodoHttp === 'POST',
+                    'bg-warning text-dark': log.metodoHttp === 'PUT',
+                    'bg-danger': log.metodoHttp === 'DELETE',
+                    'bg-secondary': log.metodoHttp === 'PATCH'
+                  }"
+                >
+                  {{ log.metodoHttp }}
+                </span>
+              </td>
+              <td><code class="text-dark">{{ log.ruta }}</code></td>
+              <td>
+                <span 
+                  class="badge" 
+                  [ngClass]="log.codigoEstado < 400 ? 'bg-success' : 'bg-danger'"
+                >
+                  {{ log.codigoEstado }}
+                </span>
+              </td>
+              <td class="text-end pe-3 small fw-semibold">{{ log.duracionMs }} ms</td>
+            </tr>
+            <tr *ngIf="logs.length === 0 && !cargando">
+              <td colspan="7" class="text-center py-4 text-muted">
+                No se encontraron registros de auditoría que coincidan con los criterios.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
 
-  <!-- Paginador -->
-  <div class="pagination-footer mt-3" *ngIf="totalPaginas > 1">
-    <span>Página {{ paginaActual }} de {{ totalPaginas }} (Total: {{ totalRegistros }} registros)</span>
-    <div class="btn-group">
-      <button class="btn btn-sm btn-secondary" [disabled]="paginaActual === 1" (click)="cambiarPagina(paginaActual - 1)">Anterior</button>
-      <button class="btn btn-sm btn-secondary" [disabled]="paginaActual === totalPaginas" (click)="cambiarPagina(paginaActual + 1)">Siguiente</button>
+    <!-- Paginador Bootstrap -->
+    <div class="card-footer bg-light d-flex justify-content-between align-items-center flex-wrap gap-2 py-3" *ngIf="totalPaginas > 1">
+      <span class="text-muted small">
+        Mostrando página <strong>{{ paginaActual }}</strong> de <strong>{{ totalPaginas }}</strong> (Total: {{ totalRegistros }} registros)
+      </span>
+      <div class="btn-group">
+        <button 
+          class="btn btn-sm btn-outline-secondary" 
+          [disabled]="paginaActual === 1" 
+          (click)="cambiarPagina(paginaActual - 1)"
+        >
+          &laquo; Anterior
+        </button>
+        <button 
+          class="btn btn-sm btn-outline-secondary" 
+          [disabled]="paginaActual === totalPaginas" 
+          (click)="cambiarPagina(paginaActual + 1)"
+        >
+          Siguiente &raquo;
+        </button>
+      </div>
     </div>
   </div>
+
 </div>

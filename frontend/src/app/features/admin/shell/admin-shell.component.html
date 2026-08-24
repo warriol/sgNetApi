@@ -1,76 +1,65 @@
-<div class="admin-layout">
-  <!-- Sidebar Lateral -->
-  <aside class="sidebar" [class.collapsed]="sidebarColapsado">
-    <div class="sidebar-header">
-      <div class="logo-box">
-        <span class="logo-text">sgNet</span>
-      </div>
-      <button class="btn-toggle" (click)="toggleSidebar()">
-        &equiv;
-      </button>
+<div class="app-layout">
+  <!-- Topbar Superior Unificada -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <a routerLink="/admin/dashboard" class="brand-logo">sgNet</a>
     </div>
 
-    <nav class="sidebar-nav">
-      <!-- Módulo de Usuarios (Visible con permiso admin.usuarios.leer) -->
-      <a 
-        routerLink="/admin/usuarios" 
-        routerLinkActive="active" 
-        class="nav-item"
-        *ngIf="tienePermiso('admin.usuarios.leer')"
-      >
-        <span class="nav-icon">&bull;</span>
-        <span class="nav-label">Gestión de Usuarios</span>
-      </a>
-
-      <!-- Módulo de Roles y Permisos (Visible con permiso roles.administrar) -->
-      <a 
-        routerLink="/admin/roles" 
-        routerLinkActive="active" 
-        class="nav-item"
-        *ngIf="tienePermiso('roles.administrar')"
-      >
-        <span class="nav-icon">&bull;</span>
-        <span class="nav-label">Roles y Permisos</span>
-      </a>
-
-      <!-- Módulo de Auditoría (Visible con permiso admin.auditoria.leer) -->
-      <a 
-        routerLink="/admin/auditoria" 
-        routerLinkActive="active" 
-        class="nav-item"
-        *ngIf="tienePermiso('admin.auditoria.leer')"
-      >
-        <span class="nav-icon">&bull;</span>
-        <span class="nav-label">Logs de Auditoría</span>
-      </a>
-    </nav>
-
-    <div class="sidebar-footer">
-      <button class="btn-logout" (click)="cerrarSesion()">
-        Cerrar Sesión
-      </button>
-    </div>
-  </aside>
-
-  <!-- Contenedor Principal (Header Superior + Router Outlet) -->
-  <div class="main-wrapper">
-    <!-- Header Navbar Superior -->
-    <header class="topbar">
-      <div class="topbar-left">
-        <h2 class="page-title">Panel de Administración</h2>
-      </div>
-
-      <div class="topbar-right">
-        <div class="user-badge">
-          <span class="user-name">{{ usuarioActual.nombre }}</span>
-          <span class="user-info">CI: {{ usuarioActual.ci }} &bull; {{ usuarioActual.correo }}</span>
+    <!-- Menú Horizontal Dinámico por Roles -->
+    <nav class="topbar-nav">
+      
+      <!-- Menú Desplegable: ROL ADMINISTRADOR -->
+      <div class="nav-dropdown" *ngIf="tieneRol('Administrador')">
+        <button class="dropdown-btn">
+          Administración <span class="arrow">&#9660;</span>
+        </button>
+        <div class="dropdown-content">
+          <a routerLink="/admin/usuarios" routerLinkActive="active" *ngIf="tienePermiso('admin.usuarios.leer')">
+            Gestión de Usuarios
+          </a>
+          <a routerLink="/admin/roles" routerLinkActive="active" *ngIf="tienePermiso('roles.administrar')">
+            Roles y Permisos
+          </a>
+          <a routerLink="/admin/auditoria" routerLinkActive="active" *ngIf="tienePermiso('admin.auditoria.leer')">
+            Logs de Auditoría
+          </a>
         </div>
       </div>
-    </header>
 
-    <!-- Área de Contenido Dinámico (Carga perezosa de vistas hijas) -->
-    <main class="content-body">
-      <router-outlet></router-outlet>
-    </main>
-  </div>
+      <!-- Menú Desplegable: ROL OPERADOR (Futuros Módulos) -->
+      <div class="nav-dropdown" *ngIf="tieneRol('Operador')">
+        <button class="dropdown-btn">
+          Operaciones <span class="arrow">&#9660;</span>
+        </button>
+        <div class="dropdown-content">
+          <a routerLink="/admin/operaciones/consultas">Consultas Operativas</a>
+        </div>
+      </div>
+
+      <!-- Menú Desplegable: ROL AUDITOR -->
+      <div class="nav-dropdown" *ngIf="tieneRol('Auditor') && !tieneRol('Administrador')">
+        <button class="dropdown-btn">
+          Auditoría <span class="arrow">&#9660;</span>
+        </button>
+        <div class="dropdown-content">
+          <a routerLink="/admin/auditoria">Ver Logs de Sistema</a>
+        </div>
+      </div>
+
+    </nav>
+
+    <!-- Información del Usuario y Cierre de Sesión -->
+    <div class="topbar-right">
+      <div class="user-info">
+        <span class="user-name">{{ usuarioActual.nombre }}</span>
+        <span class="user-ci">CI: {{ usuarioActual.ci }}</span>
+      </div>
+      <button class="btn-logout" (click)="cerrarSesion()">Cerrar Sesión</button>
+    </div>
+  </header>
+
+  <!-- Cuerpo Principal de Contenido -->
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
 </div>

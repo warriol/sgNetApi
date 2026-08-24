@@ -4,19 +4,19 @@ import { LandingComponent } from './features/landing/landing.component';
 import { AdminShellComponent } from './features/admin/shell/admin-shell.component';
 
 export const routes: Routes = [
-  {
-    path: '',
-    component: LandingComponent
-  },
+  { path: '', component: LandingComponent },
   {
     path: 'admin',
     component: AdminShellComponent,
     canActivate: [authGuard],
     children: [
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       {
-        path: '',
-        redirectTo: 'usuarios',
-        pathMatch: 'full'
+        path: 'dashboard',
+        loadComponent: () =>
+          import('./features/admin/dashboard/dashboard.component').then(
+            (m) => m.DashboardComponent
+          )
       },
       {
         path: 'usuarios',
@@ -41,8 +41,5 @@ export const routes: Routes = [
       }
     ]
   },
-  {
-    path: '**',
-    redirectTo: ''
-  }
+  { path: '**', redirectTo: '' }
 ];
