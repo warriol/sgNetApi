@@ -1,0 +1,160 @@
+$primary-navy: #0f172a;
+$accent-blue: #2563eb;
+$bg-app: #f8fafc;
+$bg-card: #ffffff;
+$text-main: #1e293b;
+$text-muted: #94a3b8;
+$border-color: #e2e8f0;
+
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f8fafc;
+}
+
+/* Barra Superior */
+.topbar {
+  background-color: #0f172a;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  height: 60px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.brand-logo {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #ffffff;
+  text-decoration: none;
+  letter-spacing: -0.5px;
+}
+
+/* Menú Horizontal */
+.topbar-nav {
+  display: flex;
+  gap: 1rem;
+  height: 100%;
+}
+
+/* Desplegables (Dropdowns) */
+.nav-dropdown {
+  position: relative;
+  display: inline-block;
+  height: 100%;
+}
+
+.dropdown-btn {
+  background: transparent;
+  color: #cbd5e1;
+  border: none;
+  padding: 0 1rem;
+  height: 100%;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.dropdown-btn:hover {
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #ffffff;
+  min-width: 200px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  border-radius: 0 0 6px 6px;
+  border: 1px solid #e2e8f0;
+  z-index: 1000;
+}
+
+.dropdown-content a {
+  color: #1e293b;
+  padding: 0.75rem 1rem;
+  text-decoration: none;
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.dropdown-content a:hover,
+.dropdown-content a.active {
+  background-color: #f1f5f9;
+  color: #2563eb;
+  font-weight: 600;
+}
+
+/* Mostrar Menú al pasar el Mouse */
+.nav-dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* Bloque Usuario Derecha */
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+}
+
+.user-name {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.user-ci {
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+.btn-logout {
+  background-color: #dc2626;
+  color: #ffffff;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-logout:hover {
+  background-color: #b91c1c;
+}
+
+.main-content {
+  flex: 1;
+  padding: 1.5rem;
+}
+
+/* Ajustes para Tablets (768px - 1023px) */
+@media (max-width: 1023px) {
+  .sidebar {
+    position: absolute;
+    height: 100vh;
+
+    &:not(.collapsed) {
+      box-shadow: 10px 0 25px rgba(0, 0, 0, 0.3);
+    }
+  }
+  .main-wrapper {
+    margin-left: 70px;
+  }
+}

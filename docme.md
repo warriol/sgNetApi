@@ -329,3 +329,50 @@ dotnet sln add tests/sgNetApi.Tests/sgNetApi.Tests.csproj
 2. En la esquina superior izquierda, haz clic en el botón Import.
 3. Selecciona o arrastra el archivo sgNetApi_OpenAPI_v3.json.
 4. Postman creará automáticamente una colección estructurada por carpetas (Auth, Usuarios, Roles, Permisos, Auditoria) con los esquemas JSON de prueba cargados.
+
+# Configuracion de rutas del frontend
+1. Crear AuthGuard
+       - src/app/core/guards/auth.guard.ts
+2. Configurar rutas
+       - src/app/app.routes.ts
+3. Registrar interceptores y httpclient
+       - src/app/app.config.ts
+
+# Crear seccion Admin
+1. Plantilla html
+       - src/app/features/admin/shell/admin-shell.component.html
+       - src/app/features/admin/shell/admin-shell.component.scss
+       - src/app/features/admin/shell/admin-shell.component.ts
+
+# Crear Servicio HTTP
+1. Crear usuario.service
+       - src/app/core/service/usuarios.service.ts
+2. Crear componente usuario.service
+       - src/app/features/admin/usuarios/usuarios.component.ts
+
+# Crear servicio de auditoria
+1. Crear auditoria.service.ts
+       - src/app/core/service/auditoria.service.ts
+2. Crear auditoria.component
+       - src/app/features/admin/auditoria/auditoria.component.ts
+       - src/app/features/admin/auditoria/auditoria.component.html
+       - src/app/features/admin/auditoria/auditoria.component.scss
+
+# Crear componente Roles
+1. Crear componente roles.component
+       - src/app/features/admin/roles/roles.component.ts
+       - src/app/features/admin/roles/roles.component.html
+       - src/app/features/admin/roles/roles.component.scss
+
+# Instalar Dependencia Node en Frontend (/frontend)
+1. Inicializar Angual (J:\Docker\net\sgNetApi\frontend)
+       - npx @angular/cli new . --directory . --skip-git --style scss --ssr false
+       - npx @angular/cli new sgNetFrontend --directory . --style scss --ssr false --skip-git
+2. Si este comando da error, en una terminal con privilegios ejecuta: Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+       - npm install
+
+# Solucionar CORS
+1. Configurar CORS en backend/src/sgNetApi.Api/Program.cs
+
+# Página de bienvenida
+       - src/app/features/admin/dashboard/dashboard.component.ts

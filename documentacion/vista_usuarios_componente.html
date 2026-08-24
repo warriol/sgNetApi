@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>sgNet - Módulo de Usuarios</title>
+  <style>
+    @page {
+      size: A4 landscape;
+      margin: 10mm;
+      background-color: #f8fafc;
+      @bottom-right {
+        content: "Página " counter(page) " de " counter(pages);
+        font-family: 'Segoe UI', Arial, sans-serif;
+        font-size: 8pt;
+        color: #64748b;
+      }
+      @bottom-left {
+        content: "sgNet - Ministerio del Interior (Uruguay)";
+        font-family: 'Segoe UI', Arial, sans-serif;
+        font-size: 8pt;
+        color: #64748b;
+      }
+    }
+
+    :root {
+      --bg-app: #f8fafc;
+      --bg-card: #ffffff;
+      --primary-navy: #0f172a;
+      --accent-blue: #2563eb;
+      --accent-hover: #1d4ed8;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --success-green: #16a34a;
+      --danger-red: #dc2626;
+      --warning-amber: #d97706;
+    }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg-app);
+      color: var(--text-main);
+      font-size: 9.5pt;
+    }
+
+    /* Top Layout Navbar Mockup */
+    .header {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+      color: white;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 3px solid #2563eb;
+    }
+
+    .header-brand {
+      font-weight: bold;
+      font-size: 13pt;
+      letter-spacing: -0.3px;
+    }
+
+    .header-user {
+      font-size: 9pt;
+      color: #93c5fd;
+    }
+
+    .container {
+      padding: 15px;
+    }
+
+    /* Action Toolbar & Filters */
+    .card {
+      background: white;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      padding: 15px;
+      margin-bottom: 15px;
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .search-box {
+      display: flex;
+      gap: 8px;
+      flex: 1;
+      max-width: 500px;
+    }
+
+    .input-text {
+      width: 100%;
+      padding: 7px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 9pt;
+      color: var(--text-main);
+      outline: none;
+    }
+
+    .btn {
+      padding: 7px 14px;
+      border-radius: 6px;
+      font-size: 9pt;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-primary { background-color: var(--accent-blue); color: white; }
+    .btn-secondary { background-color: #f1f5f9; color: var(--text-main); border: 1px solid var(--border-color); }
+    .btn-danger { background-color: #fef2f2; color: var(--danger-red); border: 1px solid #fecaca; }
+
+    /* Data Table */
+    .table-container {
+      overflow-x: auto;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background: white;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9pt;
+      text-align: left;
+    }
+
+    th {
+      background-color: #1e293b;
+      color: white;
+      padding: 10px 12px;
+      font-weight: 600;
+      font-size: 8.5pt;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border-color);
+      vertical-align: middle;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+
+    /* Badges */
+    .badge {
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 7.5pt;
+      font-weight: 700;
+      display: inline-block;
+    }
+
+    .badge-success { background-color: #dcfce7; color: #15803d; }
+    .badge-danger { background-color: #fee2e2; color: #b91c1c; }
+    .badge-role { background-color: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; margin-right: 3px; }
+
+    /* Modal Component Layout Mockup */
+    .modal-overlay {
+      margin-top: 15px;
+      background: white;
+      border: 2px solid var(--accent-blue);
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+
+    .modal-header {
+      background: #0f172a;
+      color: white;
+      padding: 12px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h3 {
+      margin: 0;
+      font-size: 11pt;
+      font-weight: 600;
+    }
+
+    .modal-body {
+      padding: 15px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    .modal-full {
+      grid-column: span 2;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .form-group label {
+      font-size: 8.5pt;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .permissions-box {
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 10px;
+      background: #f8fafc;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+    }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 8.5pt;
+      background: white;
+      padding: 6px;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+    }
+
+    .modal-footer {
+      padding: 12px 15px;
+      background: #f1f5f9;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Header Mockup -->
+  <div class="header">
+    <div class="header-brand">sgNetApi &bull; Panel de Administración</div>
+    <div class="header-user">Wilson Denis Arriola (Comisario General) &bull; CI: 43791806</div>
+  </div>
+
+  <div class="container">
+    
+    <!-- Component 1: Action Toolbar -->
+    <div class="card">
+      <div class="toolbar">
+        <div class="search-box">
+          <input type="text" class="input-text" placeholder="Buscar por Cédula, Nombre, Apellido o Correo..." value="43791806">
+          <button class="btn btn-secondary">Filtrar</button>
+        </div>
+        <div>
+          <button class="btn btn-primary">+ Nuevo Usuario</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Component 2: Main Data Table -->
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>CI / Nombre Usuario</th>
+            <th>Grado & Escalafón</th>
+            <th>Nombre Completo</th>
+            <th>Correo Institucional</th>
+            <th>Roles Asignados</th>
+            <th>Estado</th>
+            <th style="text-align: right;">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>43791806</strong></td>
+            <td>Crio. Gral. (PT)</td>
+            <td>Wilson Denis Arriola</td>
+            <td>wilson.arriola@sgnet.com.uy</td>
+            <td>
+              <span class="badge badge-role">Administrador</span>
+            </td>
+            <td><span class="badge badge-success">Habilitado</span></td>
+            <td style="text-align: right;">
+              <button class="btn btn-secondary" style="padding: 3px 8px; font-size: 8pt;">Editar Roles</button>
+              <button class="btn btn-danger" style="padding: 3px 8px; font-size: 8pt;">Bloquear</button>
+            </td>
+          </tr>
+          <tr>
+            <td><strong>12345678</strong></td>
+            <td>Agte. (E)</td>
+            <td>Juan Pérez</td>
+            <td>juan.perez@sgnet.gub.uy</td>
+            <td>
+              <span class="badge badge-role">Operador</span>
+            </td>
+            <td><span class="badge badge-danger">Bloqueado (3 Fallos)</span></td>
+            <td style="text-align: right;">
+              <button class="btn btn-secondary" style="padding: 3px 8px; font-size: 8pt;">Editar Roles</button>
+              <button class="btn btn-primary" style="padding: 3px 8px; font-size: 8pt; background-color: #16a34a;">Desbloquear</button>
+            </td>
+          </tr>
+          <tr>
+            <td><strong>87654321</strong></td>
+            <td>Of. Ppal. (A)</td>
+            <td>Maria Rodríguez</td>
+            <td>maria.rodriguez@sgnet.gub.uy</td>
+            <td>
+              <span class="badge badge-role">Operador</span>
+              <span class="badge badge-role">Auditor</span>
+            </td>
+            <td><span class="badge badge-success">Habilitado</span></td>
+            <td style="text-align: right;">
+              <button class="btn btn-secondary" style="padding: 3px 8px; font-size: 8pt;">Editar Roles</button>
+              <button class="btn btn-danger" style="padding: 3px 8px; font-size: 8pt;">Bloquear</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Component 3: Inline Interactive Modal Component Mockup -->
+    <div class="modal-overlay">
+      <div class="modal-header">
+        <h3>Editar Roles y Permisos Directos del Usuario (CI: 43791806)</h3>
+        <span style="font-size: 10pt; cursor: pointer;">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Nombre del Funcionario:</label>
+          <input type="text" class="input-text" value="Wilson Denis Arriola" readonly style="background: #f1f5f9;">
+        </div>
+        <div class="form-group">
+          <label>Unidad Ejecutora / Dependencia:</label>
+          <input type="text" class="input-text" value="DG / Centro de Cómputos y Tecnología" readonly style="background: #f1f5f9;">
+        </div>
+
+        <div class="modal-full form-group">
+          <label>1. Roles Asignados (Sincronización Atómica):</label>
+          <div style="display: flex; gap: 10px;">
+            <label class="checkbox-label" style="flex: 1;">
+              <input type="checkbox" checked> <strong>Administrador</strong> (Acceso total al sistema)
+            </label>
+            <label class="checkbox-label" style="flex: 1;">
+              <input type="checkbox"> <strong>Operador</strong> (Gestión operativa básica)
+            </label>
+            <label class="checkbox-label" style="flex: 1;">
+              <input type="checkbox"> <strong>Auditor</strong> (Solo lectura de logs)
+            </label>
+          </div>
+        </div>
+
+        <div class="modal-full form-group">
+          <label>2. Permisos Directos Adicionales (Excepciones Individuales):</label>
+          <div class="permissions-box">
+            <label class="checkbox-label">
+              <input type="checkbox" checked disabled> admin.usuarios.crear
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" checked disabled> admin.usuarios.leer
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" checked disabled> admin.usuarios.editar
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" checked disabled> admin.usuarios.desbloquear
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" checked disabled> roles.administrar
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" checked> admin.auditoria.leer
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" checked> admin.auditoria.exportar
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary">Cancelar</button>
+        <button class="btn btn-primary">Guardar Cambios (PUT /api/Usuarios/43791806/roles-permisos)</button>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

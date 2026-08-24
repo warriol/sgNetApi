@@ -16,7 +16,32 @@ sgNetApi/                          <-- Raíz del Repositorio Git
         ├── sgNetApi.Application/  <-- Casos de uso, DTOs, Lógica de Negocio
         ├── sgNetApi.Domain/       <-- Entidades (Usuarios, Roles, Permisos)
         └── sgNetApi.Infrastructure/ <-- DbContext (EF Core + Postgres), Repositorios
-└── frontend/
+frontend/
+    └── src/
+        └── app/
+            ├── core/                          # Servicios globales y seguridad (Singleton)
+            │   ├── guards/
+            │   │   ├── auth.guard.ts
+            │   │   └── permission.guard.ts
+            │   ├── interceptors/
+            │   │   └── jwt.interceptor.ts
+            │   └── services/
+            │       └── auth.service.ts
+            │
+            ├── features/                      # Módulos y vistas de la aplicación
+            │   ├── landing/                   # Portada pública y modal de login
+            │   │   ├── landing.component.html
+            │   │   ├── landing.component.scss
+            │   │   └── landing.component.ts
+            │   │
+            │   └── admin/                     # Panel de administración protegido
+            │       ├── usuarios/
+            │       ├── roles/
+            │       └── auditoria/
+            │
+            ├── app.component.html
+            ├── app.component.ts
+            └── app.routes.ts                  # Enrutamiento principal
 ```bash
 
 # Requerimientos
@@ -77,11 +102,16 @@ dotnet add src/sgNetApi.Api/sgNetApi.Api.csproj package DotNetEnv
 # Verificar
 dotnet build
 
-# Ejecutar
+# Ejecutar BACKEND
 dotnet run --project src/sgNetApi.Api/sgNetApi.Api.csproj 
 
 # Swagger
 http://localhost:5283/swagger/index.html
+
+# Ejecutar FRONTEND
+npx ng serve
+
+http://localhost:4200/
 
 ```
 

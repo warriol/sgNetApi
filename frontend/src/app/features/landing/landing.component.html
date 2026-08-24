@@ -1,0 +1,82 @@
+<div class="landing-container">
+  <!-- Navbar Superior -->
+  <header class="navbar-public">
+    <div class="logo-placeholder">
+      <span>[ LOGO INSTITUCIONAL ]</span>
+    </div>
+    
+    <button class="btn btn-outline-primary" (click)="abrirModalLogin()">
+      Iniciar Sesión
+    </button>
+  </header>
+
+  <!-- Seccion Principal (Hero) -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <span class="badge-tag">Plataforma Institucional sgNet</span>
+      <h1>Sistema de Gestión y Seguridad Integrada</h1>
+      <p class="hero-subtitle">
+        Acceso centralizado para funcionarios e inspección de auditoría.
+      </p>
+      <button class="btn btn-primary btn-lg" (click)="abrirModalLogin()">
+        Ingresar al Portal
+      </button>
+    </div>
+  </section>
+
+  <!-- Sección de Indicadores / Estadísticas -->
+  <section class="stats-section">
+    <div class="section-title">
+      <h2>Indicadores del Sistema</h2>
+      <p>Información pública y estadísticas operativas</p>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-number">1,250+</div>
+        <div class="stat-label">Funcionarios Habilitados</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">99.9%</div>
+        <div class="stat-label">Disponibilidad del Servicio</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">24/7</div>
+        <div class="stat-label">Auditoría y Monitoreo</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Modal de Login (Flotante) -->
+  <div class="modal-backdrop" *ngIf="mostrarLoginModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Iniciar Sesión</h3>
+        <button class="btn-close" (click)="cerrarModalLogin()">&times;</button>
+      </div>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onLoginSubmit()" class="modal-body">
+        <div class="alert alert-danger" *ngIf="mensajeError">
+          {{ mensajeError }}
+        </div>
+
+        <div class="form-group">
+          <label>Cédula de Identidad (sin puntos ni guiones)</label>
+          <input type="number" formControlName="ci" class="form-control" placeholder="Ej: 43791806" />
+        </div>
+
+        <div class="form-group">
+          <label>Contraseña</label>
+          <input type="password" formControlName="password" class="form-control" placeholder="••••••••" />
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="cerrarModalLogin()">Cancelar</button>
+          <button type="submit" class="btn btn-primary" [disabled]="loginForm.invalid || cargando">
+            {{ cargando ? 'Autenticando...' : 'Ingresar' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

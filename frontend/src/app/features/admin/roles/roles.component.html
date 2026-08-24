@@ -1,0 +1,109 @@
+<div class="container-fluid py-3">
+
+  <!-- Toolbar Superior -->
+  <div class="card shadow-sm border-0 mb-4">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div>
+          <h5 class="fw-bold mb-0 text-dark">Gestión de Roles del Sistema</h5>
+          <p class="text-muted small mb-0">Administre los agrupadores de permisos y perfiles de acceso.</p>
+        </div>
+        <button class="btn btn-primary fw-semibold" (click)="abrirModalCrear()">
+          + Crear Nuevo Rol
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Grilla de Tarjetas de Roles -->
+  <div class="row g-3">
+    <div class="col-md-6 col-lg-4" *ngFor="let rol of listaRoles">
+      <div class="card h-100 shadow-sm border-0">
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center py-2">
+          <h6 class="fw-bold mb-0">{{ rol.nombre }}</h6>
+          <button class="btn btn-sm btn-outline-light" (click)="abrirModalEditar(rol)">
+            Editar
+          </button>
+        </div>
+        <div class="card-body">
+          <span class="text-muted small fw-semibold d-block mb-2">
+            Permisos Asignados ({{ rol.permisos.length }}):
+          </span>
+          <div class="d-flex flex-wrap gap-1">
+            <span 
+              *ngFor="let p of rol.permisos" 
+              class="badge bg-light text-dark border me-1 mb-1" 
+              [title]="p.descripcion"
+            >
+              {{ p.nombre }}
+            </span>
+            <span *ngIf="rol.permisos.length === 0" class="text-muted small fst-italic">
+              Sin permisos asociados.
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Formulario de Rol (Estilo Bootstrap Modal) -->
+  <div class="modal fade show d-block" *ngIf="mostrarModal" style="background: rgba(0,0,0,0.5);">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content shadow-lg border-0">
+        <div class="modal-header bg-dark text-white">
+          <h5 class="modal-title fw-bold">
+            {{ modoEdicion ? 'Editar Rol' : 'Crear Nuevo Rol' }}
+          </h5>
+          <button type="button" class="btn-close btn-close-white" (click)="cerrarModal()"></button>
+        </div>
+
+        <div class="modal-body p-4">
+          <div class="alert alert-danger" *ngIf="mensajeError">
+            {{ mensajeError }}
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-bold">Nombre del Rol:</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              placeholder="Ej: Supervisor de Operaciones" 
+              [(ngModel)]="nombreRol" 
+            />
+          </div>
+
+          <div>
+            <label class="form-label fw-bold border-bottom pb-2 w-100">
+              Seleccionar Permisos del Catálogo:
+            </label>
+            <div class="row g-2 mt-1" style="max-height: 250px; overflow-y: auto;">
+              <div class="col-md-6" *ngFor="let perm of catalogoPermisos">
+                <div class="form-check border rounded p-2 ps-4 bg-light">
+                  <input 
+                    class="form-check-input" 
+                    type="checkbox" 
+                    [id]="'rol-perm-' + perm.idPermiso"
+                    [checked]="idsPermisosSeleccionados.includes(perm.idPermiso)" 
+                    (change)="togglePermiso(perm.idPermiso)" 
+                  />
+                  <label class="form-check-label d-block cursor-pointer" [for]="'rol-perm-' + perm.idPermiso">
+                    <span class="fw-semibold d-block small text-dark">{{ perm.nombre }}</span>
+                    <span class="text-muted text-xs d-block">{{ perm.descripcion }}</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Cancelar</button>
+          <button type="button" class="btn btn-primary px-4" (click)="guardarRol()" [disabled]="guardando">
+            {{ guardando ? 'Guardando...' : 'Guardar Rol' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

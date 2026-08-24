@@ -1,0 +1,65 @@
+<div class="app-layout">
+  <!-- Topbar Superior Unificada -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <a routerLink="/admin/dashboard" class="brand-logo">sgNet</a>
+    </div>
+
+    <!-- Menú Horizontal Dinámico por Roles -->
+    <nav class="topbar-nav">
+      
+      <!-- Menú Desplegable: ROL ADMINISTRADOR -->
+      <div class="nav-dropdown" *ngIf="tieneRol('Administrador')">
+        <button class="dropdown-btn">
+          Administración <span class="arrow">&#9660;</span>
+        </button>
+        <div class="dropdown-content">
+          <a routerLink="/admin/usuarios" routerLinkActive="active" *ngIf="tienePermiso('admin.usuarios.leer')">
+            Gestión de Usuarios
+          </a>
+          <a routerLink="/admin/roles" routerLinkActive="active" *ngIf="tienePermiso('roles.administrar')">
+            Roles y Permisos
+          </a>
+          <a routerLink="/admin/auditoria" routerLinkActive="active" *ngIf="tienePermiso('admin.auditoria.leer')">
+            Logs de Auditoría
+          </a>
+        </div>
+      </div>
+
+      <!-- Menú Desplegable: ROL OPERADOR (Futuros Módulos) -->
+      <div class="nav-dropdown" *ngIf="tieneRol('Operador')">
+        <button class="dropdown-btn">
+          Operaciones <span class="arrow">&#9660;</span>
+        </button>
+        <div class="dropdown-content">
+          <a routerLink="/admin/operaciones/consultas">Consultas Operativas</a>
+        </div>
+      </div>
+
+      <!-- Menú Desplegable: ROL AUDITOR -->
+      <div class="nav-dropdown" *ngIf="tieneRol('Auditor') && !tieneRol('Administrador')">
+        <button class="dropdown-btn">
+          Auditoría <span class="arrow">&#9660;</span>
+        </button>
+        <div class="dropdown-content">
+          <a routerLink="/admin/auditoria">Ver Logs de Sistema</a>
+        </div>
+      </div>
+
+    </nav>
+
+    <!-- Información del Usuario y Cierre de Sesión -->
+    <div class="topbar-right">
+      <div class="user-info">
+        <span class="user-name">{{ usuarioActual.nombre }}</span>
+        <span class="user-ci">CI: {{ usuarioActual.ci }}</span>
+      </div>
+      <button class="btn-logout" (click)="cerrarSesion()">Cerrar Sesión</button>
+    </div>
+  </header>
+
+  <!-- Cuerpo Principal de Contenido -->
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>
