@@ -1,0 +1,68 @@
+<section class="admin-panel">
+  <div class="panel-header">
+    <div>
+      <p class="eyebrow">Administración</p>
+      <h2>Turnos</h2>
+    </div>
+    <button class="btn btn-primary" (click)="nueva()">Nuevo turno</button>
+  </div>
+
+  <div *ngIf="mensaje" class="alert">{{ mensaje }}</div>
+
+  <div class="layout-grid" *ngIf="!cargando; else cargandoTpl">
+    <aside class="sidebar-list">
+      <div *ngFor="let turno of turnos" class="list-item" [class.active]="seleccionada?.idTurno === turno.idTurno" (click)="seleccionar(turno)">
+        <strong>{{ turno.nombre }}</strong>
+        <small>{{ turno.horaInicio }} - {{ turno.horaFin }}</small>
+      </div>
+    </aside>
+
+    <div class="panel-form">
+      <form (ngSubmit)="guardar()">
+        <div class="field-grid">
+          <label>
+            Nombre
+            <input [(ngModel)]="formulario.nombre" name="nombre" />
+          </label>
+
+          <label>
+            Tipo de turno
+            <select [(ngModel)]="formulario.tipoTurno" name="tipoTurno">
+              <option *ngFor="let tipo of tiposTurno" [ngValue]="tipo.value">{{ tipo.label }}</option>
+            </select>
+          </label>
+
+          <label>
+            Hora inicio
+            <input [(ngModel)]="formulario.horaInicio" name="horaInicio" type="time" />
+          </label>
+
+          <label>
+            Hora fin
+            <input [(ngModel)]="formulario.horaFin" name="horaFin" type="time" />
+          </label>
+
+          <label>
+            Descripción
+            <input [(ngModel)]="formulario.descripcion" name="descripcion" />
+          </label>
+
+          <label class="checkbox-inline">
+            <input type="checkbox" [(ngModel)]="formulario.habilitado" name="habilitado" />
+            Habilitado
+          </label>
+        </div>
+
+        <div class="actions">
+          <button type="submit" class="btn btn-primary" [disabled]="guardando">{{ guardando ? 'Guardando...' : 'Guardar' }}</button>
+          <button type="button" class="btn btn-secondary" (click)="nueva()">Nuevo</button>
+          <button *ngIf="seleccionada" type="button" class="btn btn-danger" (click)="eliminar(seleccionada)">Eliminar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <ng-template #cargandoTpl>
+    <div class="loading">Cargando turnos...</div>
+  </ng-template>
+</section>

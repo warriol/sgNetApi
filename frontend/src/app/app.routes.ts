@@ -42,6 +42,34 @@ export const routes: Routes = [
           )
       },
       {
+        path: 'dependencias',
+        loadComponent: () =>
+          import('./features/admin/dependencias/dependencias.component').then(
+            (m) => m.DependenciasGestionComponent
+          )
+      },
+      {
+        path: 'dependencias/turnos',
+        loadComponent: () =>
+          import('./features/admin/dependencias/turnos.component').then(
+            (m) => m.DependenciasTurnosComponent
+          )
+      },
+      {
+        path: 'dependencias/escalafon',
+        loadComponent: () =>
+          import('./features/admin/dependencias/escalafon.component').then(
+            (m) => m.DependenciasEscalafonComponent
+          )
+      },
+      {
+        path: 'dependencias/indumentaria',
+        loadComponent: () =>
+          import('./features/admin/dependencias/indumentaria.component').then(
+            (m) => m.DependenciasIndumentariaComponent
+          )
+      },
+      {
         path: 'auditoria',
         loadComponent: () =>
           import('./features/admin/auditoria/auditoria.component').then(

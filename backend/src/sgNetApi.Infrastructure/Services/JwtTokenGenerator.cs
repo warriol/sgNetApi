@@ -22,7 +22,7 @@ public class JwtTokenGenerator : IJwtTokenGenerator
         // Claims principales del usuario
         var claims = new List<Claim>
         {
-            new(ClaimTypes.NameIdentifier, usuario.Ci.ToString()),
+            new(ClaimTypes.NameIdentifier, usuario.NombreUsuario),
             new(ClaimTypes.Name, $"{usuario.Nombre} {usuario.Apellido}"),
             new(ClaimTypes.Email, usuario.Correo),
             new("NombreUsuario", usuario.NombreUsuario)

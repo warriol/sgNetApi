@@ -1,0 +1,71 @@
+<section class="admin-panel">
+  <div class="panel-header">
+    <div>
+      <p class="eyebrow">Inventario</p>
+      <h2>Indumentaria y Equipamiento</h2>
+    </div>
+  </div>
+
+  <div *ngIf="mensaje" class="alert">{{ mensaje }}</div>
+
+  <div class="tabs">
+    <button [class.active]="tipoActivo === 'armas'" class="btn btn-secondary" (click)="cambiarTipo('armas')">Armas</button>
+    <button [class.active]="tipoActivo === 'chalecos'" class="btn btn-secondary" (click)="cambiarTipo('chalecos')">Chalecos</button>
+    <button [class.active]="tipoActivo === 'esposas'" class="btn btn-secondary" (click)="cambiarTipo('esposas')">Esposas</button>
+  </div>
+
+  <div class="inventory-layout">
+    <div class="panel-form">
+      <form (ngSubmit)="guardar()">
+        <div class="field-grid">
+          <label>
+            Nombre / modelo
+            <input [(ngModel)]="formulario.nombre" name="nombre" />
+          </label>
+
+          <label *ngIf="tipoActivo === 'armas'">
+            Serie
+            <input [(ngModel)]="formulario.serie" name="serie" />
+          </label>
+
+          <label *ngIf="tipoActivo === 'chalecos'">
+            Talle
+            <input [(ngModel)]="formulario.serie" name="serie" />
+          </label>
+
+          <label *ngIf="tipoActivo === 'esposas'">
+            Marca
+            <input [(ngModel)]="formulario.marca" name="marca" />
+          </label>
+
+          <label>
+            Estado
+            <select [(ngModel)]="formulario.estado" name="estado">
+              <option value="Disponible">Disponible</option>
+              <option value="Asignado">Asignado</option>
+              <option value="En revisión">En revisión</option>
+              <option value="Baja">Baja</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="actions">
+          <button class="btn btn-primary" type="submit">Guardar</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="items-list">
+      <div *ngFor="let item of elementos" class="list-item">
+        <div>
+          <strong>{{ item.nombre }}</strong>
+          <small>{{ item.serie || item.talle || item.marca || 'Sin detalle' }} · {{ item.estado }}</small>
+        </div>
+        <div class="item-actions">
+          <button class="btn btn-secondary" (click)="editar(item)">Editar</button>
+          <button class="btn btn-danger" (click)="eliminar(item)">Eliminar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

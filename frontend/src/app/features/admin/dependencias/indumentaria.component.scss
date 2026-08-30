@@ -1,0 +1,19 @@
+.admin-panel { display: flex; flex-direction: column; gap: 1rem; padding: 1.5rem; }
+.panel-header { display: flex; justify-content: space-between; align-items: center; }
+.eyebrow { text-transform: uppercase; letter-spacing: 0.08em; color: #667; margin: 0; font-size: 0.7rem; }
+.tabs { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+.btn { border: none; border-radius: 10px; padding: 0.7rem 1rem; cursor: pointer; }
+.btn-primary { background: #2563eb; color: white; }
+.btn-secondary { background: #eef2ff; color: #1f2a44; }
+.btn-danger { background: #fee2e2; color: #991b1b; }
+.btn.active { background: #dbeafe; color: #1d4ed8; }
+.inventory-layout { display: grid; grid-template-columns: 1fr 1.2fr; gap: 1rem; }
+.panel-form, .items-list { background: #fff; border: 1px solid #e5e7eb; border-radius: 14px; padding: 1rem; }
+.items-list { display: flex; flex-direction: column; gap: 0.75rem; }
+.list-item { display: flex; justify-content: space-between; gap: 0.75rem; padding: 0.85rem 1rem; border: 1px solid #dde3ee; border-radius: 12px; background: #fff; }
+.field-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+label { display: flex; flex-direction: column; gap: 0.4rem; font-weight: 600; color: #2f3b52; }
+input, select, button { font: inherit; }
+input, select { border: 1px solid #d7deea; border-radius: 10px; padding: 0.7rem 0.8rem; background: #f9fbff; }
+.alert { padding: 0.85rem 1rem; border-radius: 10px; background: #eefbf3; color: #095c2d; border: 1px solid #bbf7d0; }
+.item-actions { display: flex; gap: 0.5rem; }

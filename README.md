@@ -1,124 +1,128 @@
 # sgNetApi
-Sistema de Gestión en .net, API backend/frontend solution.
+Sistema de gestión institucional en .NET y Angular para administración de usuarios, dependencias, turnos, escalafón e inventario polical.
 
 # Arquitectura
 ```bash
-sgNetApi/                          <-- Raíz del Repositorio Git
+sgNetApi/
 ├── .gitignore
 ├── .env
 ├── README.md
 ├── LICENSE
-├── docker-compose.yml             <-- Servicios locales (PostgreSQL, PgAdmin, etc.)
-└── backend/                       <-- Solución .NET
-    ├── sgNetApi.sln
-    └── src/
-        ├── sgNetApi.Api/          <-- Controladores / Minimal APIs y Endpoints JWT
-        ├── sgNetApi.Application/  <-- Casos de uso, DTOs, Lógica de Negocio
-        ├── sgNetApi.Domain/       <-- Entidades (Usuarios, Roles, Permisos)
-        └── sgNetApi.Infrastructure/ <-- DbContext (EF Core + Postgres), Repositorios
-frontend/
+├── docker-compose.yml
+├── docme.md
+├── domain-spec.md
+├── backend/
+│   ├── sgNetApi.sln
+│   └── src/
+│       ├── sgNetApi.Api/
+│       ├── sgNetApi.Application/
+│       ├── sgNetApi.Domain/
+│       └── sgNetApi.Infrastructure/
+└── frontend/
     └── src/
         └── app/
-            ├── core/                          # Servicios globales y seguridad (Singleton)
+            ├── core/
             │   ├── guards/
-            │   │   ├── auth.guard.ts
-            │   │   └── permission.guard.ts
             │   ├── interceptors/
-            │   │   └── jwt.interceptor.ts
             │   └── services/
-            │       └── auth.service.ts
-            │
-            ├── features/                      # Módulos y vistas de la aplicación
-            │   ├── landing/                   # Portada pública y modal de login
-            │   │   ├── landing.component.html
-            │   │   ├── landing.component.scss
-            │   │   └── landing.component.ts
-            │   │
-            │   └── admin/                     # Panel de administración protegido
+            ├── features/
+            │   ├── landing/
+            │   └── admin/
             │       ├── usuarios/
             │       ├── roles/
-            │       └── auditoria/
-            │
-            ├── app.component.html
-            ├── app.component.ts
-            └── app.routes.ts                  # Enrutamiento principal
-```bash
-
-# Requerimientos
-- docker desktop
-- Microsoft .NET SDK 10
-
-# Crear Sln
-```bash
-# 1. Crear el archivo de solución dentro de backend/
-dotnet new sln -n sgNetApi
-
-# 2. Crear los proyectos .NET dentro de las carpetas que ya armaste
-dotnet new webapi -n sgNetApi.Api -o src/sgNetApi.Api
-dotnet new classlib -n sgNetApi.Application -o src/sgNetApi.Application
-dotnet new classlib -n sgNetApi.Domain -o src/sgNetApi.Domain
-dotnet new classlib -n sgNetApi.Infrastructure -o src/sgNetApi.Infrastructure
-
-# 3. Vincular los proyectos al archivo de solución (.sln)
-# Estando en J:\Docker\net\sgNetApi\backend
-dotnet sln add src/sgNetApi.Api/sgNetApi.Api.csproj
-dotnet sln add src/sgNetApi.Application/sgNetApi.Application.csproj
-dotnet sln add src/sgNetApi.Domain/sgNetApi.Domain.csproj
-dotnet sln add src/sgNetApi.Infrastructure/sgNetApi.Infrastructure.csproj
-
-# Inyección de dependencias
-# Api depende de Application e Infrastructure
-dotnet add src/sgNetApi.Api/sgNetApi.Api.csproj reference src/sgNetApi.Application/sgNetApi.Application.csproj
-dotnet add src/sgNetApi.Api/sgNetApi.Api.csproj reference src/sgNetApi.Infrastructure/sgNetApi.Infrastructure.csproj
-
-# Infrastructure depende de Application (para implementar interfaces/repositorios)
-dotnet add src/sgNetApi.Infrastructure/sgNetApi.Infrastructure.csproj reference src/sgNetApi.Application/sgNetApi.Application.csproj
-
-# Application depende únicamente de Domain
-dotnet add src/sgNetApi.Application/sgNetApi.Application.csproj reference src/sgNetApi.Domain/sgNetApi.Domain.csproj
-
-# Infrastructure también requiere acceso a Domain (para mapear entidades)
-dotnet add src/sgNetApi.Infrastructure/sgNetApi.Infrastructure.csproj reference src/sgNetApi.Domain/sgNetApi.Domain.csproj
-
-# Instalar paquetes NuGet
-# En la capa Infrastructure: Proveedor PostgreSQL y ASP.NET Core Identity para EF Core
-dotnet add src/sgNetApi.Infrastructure/sgNetApi.Infrastructure.csproj package Npgsql.EntityFrameworkCore.PostgreSQL
-dotnet add src/sgNetApi.Infrastructure/sgNetApi.Infrastructure.csproj package Microsoft.AspNetCore.Identity.EntityFrameworkCore
-
-# En la capa Api: Herramientas de diseño EF Core para poder generar migraciones
-dotnet add src/sgNetApi.Api/sgNetApi.Api.csproj package Microsoft.EntityFrameworkCore.Design
-dotnet add src/sgNetApi.Api/sgNetApi.Api.csproj package Swashbuckle.AspNetCore
-
-dotnet add src/sgNetApi.Infrastructure/sgNetApi.Infrastructure.csproj package System.IdentityModel.Tokens.Jwt
-dotnet add src/sgNetApi.Infrastructure/sgNetApi.Infrastructure.csproj package Microsoft.IdentityModel.Tokens
-dotnet add src/sgNetApi.Api/sgNetApi.Api.csproj package Swashbuckle.AspNetCore
-dotnet add src/sgNetApi.Api/sgNetApi.Api.csproj package Microsoft.OpenApi
-
-dotnet add src/sgNetApi.Infrastructure/sgNetApi.Infrastructure.csproj package Microsoft.Extensions.Hosting.Abstractions
-
-# utilizar .env
-dotnet add src/sgNetApi.Api/sgNetApi.Api.csproj package DotNetEnv
-
-# Verificar
-dotnet build
-
-# Ejecutar BACKEND
-dotnet run --project src/sgNetApi.Api/sgNetApi.Api.csproj 
-
-# Swagger
-http://localhost:5283/swagger/index.html
-
-# Ejecutar FRONTEND
-npx ng serve
-
-http://localhost:4200/
-
+            │       ├── auditoria/
+            │       ├── catalogos/
+            │       ├── dependencias/
+            │       └── shell/
+            ├── app.config.ts
+            ├── app.routes.ts
+            └── app.component.ts
 ```
 
-## Comandos
+# Funcionalidades actuales
 
-- primero inicializar docker desktop
+## Seguridad y administración
+- JWT con autenticación y autorización basada en permisos.
+- Roles y permisos por usuario.
+- Auditoría HTTP centralizada con middleware.
+- Gestión de usuarios, estados, roles y permisos.
 
+## Dependencias y turnos
+- Administración de unidades ejecutoras y dependencias.
+- Definición de turnos con tipos operativos:
+  - 4 turnos de 6 hs
+  - 3 turnos de 8 hs
+  - 2 turnos de 12 hs
+  - 1 turno de 24 hs
+- Nombre explicativo de turnos para su selección posterior en la dependencia.
+- Asignación de turno a la dependencia.
+
+## Escalafón
+- Asignación de funcionarios a dependencias.
+- Turno inicial por defecto: No asignado.
+- Cambio del turno del funcionario operativamente desde el escalafón.
+- Regla de negocio:
+  - 24 hs -> turno único
+  - 4x6 / 3x8 / 2x12 -> Turno 1 a Turno 4
+
+## Indumentaria y revista
+- Gestión del inventario de armas, chalecos antibalas y esposas.
+- Asignación por funcionario.
+- Registro de revista y trazabilidad del equipamiento entregado.
+
+# Requerimientos
+- Docker Desktop
+- .NET SDK 10
+- Node.js + npm
+- PostgreSQL / EF Core
+
+# Ejecutar el proyecto
+
+## Backend
+```bash
+cd backend
+Set-Location 'j:\Docker\net\sgNetApi\backend'
+dotnet restore
+dotnet run --project src/sgNetApi.Api/sgNetApi.Api.csproj
+```
+
+Swagger:
+- http://localhost:5283/swagger
+
+## Frontend
+```bash
+cd frontend
+npm install
+npx ng serve
+```
+
+Aplicación:
+- http://localhost:4200/
+
+## Base de datos
 ```bash
 docker compose up -d
 ```
+
+# Módulos del panel administrativo
+- Gestión de Usuarios
+- Roles y Permisos
+- Gestión de Catálogos
+- Dependencia
+- Gestionar Turnos
+- Gestionar Escalafón
+- Gestionar Indumentaria
+- Auditoría
+
+# Datos relevantes de la implementación
+- Los turnos operativos se gestionan desde el catálogo de turnos.
+- La dependencia usa un turno general de operación.
+- El funcionario lleva su turno individual dentro del escalafón.
+- El módulo de indumentaria se conecta a la API y persiste los cambios reales.
+- La persistencia se valida con la base de datos y endpoints reales de la API.
+
+# Validación actual
+El proyecto ya quedó verificado con:
+- `dotnet test --nologo` en backend
+- `npm run build` en frontend
+

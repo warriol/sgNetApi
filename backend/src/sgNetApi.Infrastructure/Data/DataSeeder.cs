@@ -86,7 +86,9 @@ public class DataSeeder
             new Permiso { IdPermiso = 5, Nombre = "roles.administrar", Descripcion = "Permite gestionar roles y asignar permisos" },
             new Permiso { IdPermiso = 6, Nombre = "admin.auditoria.leer", Descripcion = "Consultar el historial de auditoría HTTP y logs" },
             new Permiso { IdPermiso = 7, Nombre = "admin.auditoria.exportar", Descripcion = "Exportar logs de auditoría a formato CSV" },
-                new Permiso { IdPermiso = 8, Nombre = "admin.catalogos.gestion", Descripcion = "Crear, modificar y eliminar catálogos institucionales" }
+            new Permiso { IdPermiso = 8, Nombre = "admin.catalogos.gestion", Descripcion = "Crear, modificar y eliminar catálogos institucionales" },
+            new Permiso { IdPermiso = 9, Nombre = "admin.dependencias.gestion", Descripcion = "Gestionar dependencias, jefaturas, dirección y turnos" },
+            new Permiso { IdPermiso = 10, Nombre = "admin.inventario.gestion", Descripcion = "Gestionar inventario y asignación de equipamiento policial" }
         };
 
         foreach (var permiso in permisosDeseados)
@@ -191,6 +193,23 @@ public class DataSeeder
                 UsuarioNombreUsuario = usuarioAdmin.NombreUsuario
             });
 
+            await _context.SaveChangesAsync();
+        }
+
+        var usuarioAdministrador = await _context.Usuarios
+            .FirstOrDefaultAsync(u => u.NombreUsuario == "043791806");
+        var rolAdministrador = await _context.Roles
+            .FirstOrDefaultAsync(r => r.Nombre == "Administrador");
+
+        if (usuarioAdministrador != null && rolAdministrador != null &&
+            !await _context.Set<UsuarioRol>().AnyAsync(ur =>
+                ur.NombreUsuario == usuarioAdministrador.NombreUsuario && ur.IdRol == rolAdministrador.IdRol))
+        {
+            _context.Set<UsuarioRol>().Add(new UsuarioRol
+            {
+                NombreUsuario = usuarioAdministrador.NombreUsuario,
+                IdRol = rolAdministrador.IdRol
+            });
             await _context.SaveChangesAsync();
         }
     }

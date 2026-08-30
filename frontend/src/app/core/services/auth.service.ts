@@ -50,16 +50,39 @@ export class AuthService {
     if (!token) return [];
 
     try {
-      const payloadBase64 = token.split('.')[1];
-      const payloadJson = atob(payloadBase64);
+      const payloadJson = this.decodificarPayload(token);
       const payload = JSON.parse(payloadJson);
-      
-      const permisos = payload.permiso;
+
+      const permisos = payload.permiso ?? payload['permiso[]'];
       if (!permisos) return [];
-      
+
       return Array.isArray(permisos) ? permisos : [permisos];
     } catch {
       return [];
     }
+  }
+
+  obtenerRolesDelToken(): string[] {
+    const token = this.obtenerToken();
+    if (!token) return [];
+
+    try {
+      const payload = JSON.parse(this.decodificarPayload(token));
+      const roles = payload.role ?? payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
+      if (!roles) return [];
+      return Array.isArray(roles) ? roles : [roles];
+    } catch {
+      return [];
+    }
+  }
+
+  private decodificarPayload(token: string): string {
+    const segmento = token.split('.')[1]
+      .replace(/-/g, '+')
+      .replace(/_/g, '/');
+    const padding = segmento.length % 4;
+    const base64 = padding ? segmento.padEnd(segmento.length + 4 - padding, '=') : segmento;
+    const bytes = Uint8Array.from(atob(base64), (caracter) => caracter.charCodeAt(0));
+    return new TextDecoder().decode(bytes);
   }
 }

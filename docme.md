@@ -2,33 +2,63 @@
 - Docker
     - App (.NET 10) IDE VSC
     - BD (PostgreSQL, EF Core)
-    - PdAdmin
+    - PgAdmin
+
 ```bash
-┌─────────────────────────────────────────┐      ┌──────────────────────────────────────────┐
-│   Frontend 1: Panel Administrativo      │      │   Frontend 2: Sistema de Gestión         │
-│   (Gestión de Usuarios/Roles/Permisos)  │      │   (Negocio, Reportes, Operaciones)       │
-└────────────────────┬────────────────────┘      └────────────────────┬─────────────────────┘
-                     │                                                │
-                     │         HTTPS / JSON / JWT Tokens              │
-                     └────────────────────┬───────────────────────────┘
-                                          │
-                                          ▼
-                      ┌───────────────────────────────────────┐
-                      │        API Central (.NET 10)          │
-                      │             `sgNetApi`                │
-                      ├───────────────────────────────────────┤
-                      │  • Módulo de Autenticación / Roles    │
-                      │  • Módulo de Gestión de Información   │
-                      └───────────────────┬───────────────────┘
-                                          │
-                                          ▼
-                      ┌───────────────────────────────────────┐
-                      │    Base de Datos Unificada (Postgres) │
-                      └───────────────────────────────────────┘
+┌─────────────────────────────────────────────┐      ┌────────────────────────────────────────────┐
+│ Frontend Administrativo                     │      │ Sistema de Gestión / Operaciones            │
+│ - Usuarios                                  │      │ - Reportes / consultas / negocio           │
+│ - Roles / permisos                          │      │ - Casos operativos                         │
+│ - Dependencias / turnos / escalafón         │      │ - Inventario / revisión                    │
+│ - Indumentaria / revista                    │      │                                            │
+└──────────────────────┬──────────────────────┘      └──────────────────────┬──────────────────────┘
+                       │                                                │
+                       │ HTTPS / JSON / JWT                             │
+                       └──────────────────────┬────────────────────────────┘
+                                              │
+                                              ▼
+                              ┌──────────────────────────────┐
+                              │ API Central (.NET 10)       │
+                              │ sgNetApi                    │
+                              │ - Auth / RBAC               │
+                              │ - Dependencias              │
+                              │ - Turnos / escalafón         │
+                              │ - Armamento / chalecos      │
+                              │ - Auditoría                 │
+                              └──────────────┬───────────────┘
+                                             │
+                                             ▼
+                              ┌──────────────────────────────┐
+                              │ PostgreSQL / EF Core        │
+                              └──────────────────────────────┘
 ```
 
+# Módulos funcionales actuales
+
+## Dependencias
+- Gestión de unidades ejecutoras y dependencias.
+- Validación de UUEE, dependencias, jefes, dirección y turno.
+- Cálculo de completitud de la dependencia.
+
+## Turnos
+- Catálogo de turnos con tipos: 4x6, 3x8, 2x12, 1x24.
+- Nombre explicativo por patrón de operación.
+- Hora de inicio y hora de fin configurables.
+- Habilitado/deshabilitado para evitar eliminación física en uso.
+
+## Escalafón
+- Asignación de funcionarios a dependencias.
+- Turno inicial por defecto: No asignado.
+- Ajuste del turno operativo desde la gestión del escalafón.
+- Regla: turno único para 24 hs, o Turno 1 a 4 para los demás casos.
+
+## Indumentaria / Revista
+- Inventario de armas, chalecos antibalas y esposas.
+- Registro de asignación por funcionario.
+- Validación y trazabilidad del equipo entregado.
+
 # Fases
-[Fase 1: Infraestructura Local] 
+[Fase 1: Infraestructura Local]
  └── Definir docker-compose.yml con PostgreSQL.
  └── Verificar persistencia con volúmenes locales.
 
@@ -37,7 +67,8 @@
  └── Configurar variables de entorno y DbContext.
 
 [Fase 3: Desarrollo de Funcionalidades]
- └── Modelado de entidades, Migraciones Code-First y Controladores/Minimal APIs.
+ └── Modelado de entidades, Migraciones Code-First y Controladores.
+ └── Gestión de dependencias, turnos, escalafón, inventario y auditoría.
  └── Pruebas unitarias/integración.
 
 [Fase 4: Empaquetado y Despliegue Cloud]

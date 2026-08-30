@@ -1,0 +1,83 @@
+<section class="admin-panel">
+  <div class="panel-header">
+    <div>
+      <p class="eyebrow">Dependencia</p>
+      <h2>Escalafón y Revista</h2>
+    </div>
+  </div>
+
+  <div *ngIf="mensaje" class="alert">{{ mensaje }}</div>
+
+  <div class="layout-grid">
+    <aside class="sidebar-list">
+      <div *ngFor="let dependencia of dependencias" class="list-item" [class.active]="seleccionada?.idDependencia === dependencia.idDependencia" (click)="seleccionarDependencia(dependencia)">
+        <strong>{{ dependencia.nombre }}</strong>
+        <small>{{ dependencia.siglas }}</small>
+      </div>
+    </aside>
+
+    <div class="panel-form">
+      <h3>Funcionarios de la dependencia</h3>
+      <div *ngIf="seleccionada; else vacioTpl" class="staff-list">
+        <div *ngFor="let usuario of usuariosDeDependencia()" class="staff-item">
+          <div>
+            <strong>{{ usuario.nombre }} {{ usuario.apellido }}</strong>
+            <small>{{ usuario.nombreUsuario }}</small>
+          </div>
+          <div class="actions" style="display:flex; gap:8px; align-items:center;">
+            <label style="display:flex; align-items:center; gap:8px; margin:0;">
+              <span>Turno</span>
+              <select [(ngModel)]="turnoSeleccionado" [name]="'turno_' + usuario.nombreUsuario" (change)="funcionarioSeleccionado = usuario">
+                <option [ngValue]="null">No asignado</option>
+                <option *ngFor="let turno of turnosDisponibles()" [ngValue]="turno.idTurno">{{ turno.nombre }} ({{ turno.tipoTurno }})</option>
+              </select>
+            </label>
+            <button type="button" class="btn btn-secondary" (click)="funcionarioSeleccionado = usuario; guardarTurnoFuncionario()">Guardar turno</button>
+            <button class="btn btn-primary" (click)="abrirRevista(usuario)">Revista</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="funcionarioSeleccionado" class="revista-card">
+    <h3>Revista para {{ funcionarioSeleccionado.nombre }} {{ funcionarioSeleccionado.apellido }}</h3>
+    <form (ngSubmit)="guardarRevista()">
+      <div class="field-grid">
+        <label>
+          Arma
+          <select [(ngModel)]="formularioEquipo.idArmaPolicial" name="idArmaPolicial">
+            <option *ngFor="let item of inventario.armas" [ngValue]="item.id">{{ item.nombre }}</option>
+          </select>
+        </label>
+
+        <label>
+          Chaleco antibala
+          <select [(ngModel)]="formularioEquipo.idChalecoAntibalaPolicial" name="idChalecoAntibalaPolicial">
+            <option *ngFor="let item of inventario.chalecos" [ngValue]="item.id">{{ item.nombre }}</option>
+          </select>
+        </label>
+
+        <label>
+          Esposas
+          <select [(ngModel)]="formularioEquipo.idEsposasPolicial" name="idEsposasPolicial">
+            <option *ngFor="let item of inventario.esposas" [ngValue]="item.id">{{ item.nombre }}</option>
+          </select>
+        </label>
+
+        <label>
+          Observaciones
+          <textarea [(ngModel)]="formularioEquipo.observaciones" name="observaciones" rows="3"></textarea>
+        </label>
+      </div>
+
+      <div class="actions">
+        <button type="submit" class="btn btn-primary">Guardar revista</button>
+      </div>
+    </form>
+  </div>
+
+  <ng-template #vacioTpl>
+    <div class="empty-state">No hay dependencia seleccionada.</div>
+  </ng-template>
+</section>

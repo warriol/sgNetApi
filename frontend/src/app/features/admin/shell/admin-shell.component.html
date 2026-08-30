@@ -23,6 +23,18 @@
           <a routerLink="/admin/catalogos" routerLinkActive="active" *ngIf="tienePermiso('admin.catalogos.gestion')">
             Gestión de Catálogos
           </a>
+          <a routerLink="/admin/dependencias" routerLinkActive="active" *ngIf="tienePermiso('admin.dependencias.gestion')">
+            Dependencia
+          </a>
+          <a routerLink="/admin/dependencias/turnos" routerLinkActive="active" *ngIf="tienePermiso('admin.dependencias.gestion')">
+            Gestionar Turnos
+          </a>
+          <a routerLink="/admin/dependencias/escalafon" routerLinkActive="active" *ngIf="tienePermiso('admin.dependencias.gestion')">
+            Gestionar Escalafón
+          </a>
+          <a routerLink="/admin/dependencias/indumentaria" routerLinkActive="active" *ngIf="tienePermiso('admin.inventario.gestion')">
+            Gestionar Indumentaria
+          </a>
           <a routerLink="/admin/auditoria" routerLinkActive="active" *ngIf="tienePermiso('admin.auditoria.leer')">
             Logs de Auditoría
           </a>

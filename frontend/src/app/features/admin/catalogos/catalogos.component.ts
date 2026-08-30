@@ -90,6 +90,10 @@ export class CatalogosComponent implements OnInit {
       this.mensajeError = 'Seleccione una unidad ejecutora.';
       return;
     }
+    if ((this.catalogoActivo === 'dependencias' || this.catalogoActivo === 'unidadesEjecutoras') && !this.formulario.siglas?.trim()) {
+      this.mensajeError = 'Las siglas son obligatorias.';
+      return;
+    }
 
     this.guardando = true;
     const operacion = this.modoEdicion && this.idEdicion !== null

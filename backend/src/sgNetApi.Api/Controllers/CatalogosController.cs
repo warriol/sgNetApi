@@ -39,10 +39,14 @@ public class CatalogosController : ControllerBase
     [RequirePermission("admin.catalogos.gestion")]
     public async Task<IActionResult> Crear(string tipo, [FromBody] CatalogoCrudDto dto)
     {
+        var validacion = await ValidarEntradaAsync(tipo, dto);
+        if (validacion != null) return BadRequest(new { mensaje = validacion });
+
         var entidad = CrearEntidad(tipo, dto);
         if (entidad == null) return BadRequest(new { mensaje = "Tipo de catálogo no válido." });
         _context.Add(entidad);
-        await _context.SaveChangesAsync();
+        try { await _context.SaveChangesAsync(); }
+        catch (DbUpdateException) { return Conflict(new { mensaje = "No se pudo crear el registro. Verifique que no exista otro con el mismo nombre o código." }); }
         return Ok(new { mensaje = "Catálogo creado correctamente." });
     }
 
@@ -50,10 +54,14 @@ public class CatalogosController : ControllerBase
     [RequirePermission("admin.catalogos.gestion")]
     public async Task<IActionResult> Actualizar(string tipo, int id, [FromBody] CatalogoCrudDto dto)
     {
+        var validacion = await ValidarEntradaAsync(tipo, dto);
+        if (validacion != null) return BadRequest(new { mensaje = validacion });
+
         var entidad = await BuscarEntidad(tipo, id);
         if (entidad == null) return NotFound(new { mensaje = "Registro no encontrado." });
         if (!ActualizarEntidad(tipo, entidad, dto)) return BadRequest(new { mensaje = "Tipo de catálogo no válido." });
-        await _context.SaveChangesAsync();
+        try { await _context.SaveChangesAsync(); }
+        catch (DbUpdateException) { return Conflict(new { mensaje = "No se pudo actualizar el registro. Verifique que no exista otro con el mismo nombre o código." }); }
         return Ok(new { mensaje = "Catálogo actualizado correctamente." });
     }
 
@@ -103,6 +111,25 @@ public class CatalogosController : ControllerBase
     private static bool ActualizarUuee(UnidadEjecutora x, CatalogoCrudDto d) { x.Nombre = d.Nombre; x.Siglas = d.Siglas ?? string.Empty; return true; }
     private static bool ActualizarDependencia(Dependencia x, CatalogoCrudDto d) { x.IdUuee = d.IdUuee ?? x.IdUuee; x.Nombre = d.Nombre; x.Siglas = d.Siglas ?? string.Empty; return true; }
     private static string Normalizar(string tipo) => tipo.Replace("_", string.Empty).Replace("-", string.Empty).ToLowerInvariant();
+
+    private async Task<string?> ValidarEntradaAsync(string tipo, CatalogoCrudDto dto)
+    {
+        if (string.IsNullOrWhiteSpace(dto.Nombre) && Normalizar(tipo) != "grados")
+            return "El nombre es obligatorio.";
+
+        if (Normalizar(tipo) == "dependencias")
+        {
+            if (string.IsNullOrWhiteSpace(dto.Siglas)) return "Las siglas de la dependencia son obligatorias.";
+            if (!dto.IdUuee.HasValue) return "Debe seleccionar una Unidad Ejecutora.";
+            if (!await _context.UnidadesEjecutoras.AnyAsync(x => x.IdUuee == dto.IdUuee.Value))
+                return "La Unidad Ejecutora seleccionada no existe.";
+        }
+
+        if (Normalizar(tipo) == "unidadesejecutoras" && string.IsNullOrWhiteSpace(dto.Siglas))
+            return "Las siglas de la Unidad Ejecutora son obligatorias.";
+
+        return null;
+    }
 }
 
 public class CatalogoCrudDto

@@ -35,6 +35,7 @@ public class UsuariosController : ControllerBase
         var usuarios = await _context.Usuarios
             .Include(u => u.Grado)
             .Include(u => u.Escalafon)
+            .Include(u => u.TurnoAsignado)
             .Include(u => u.Dependencia).ThenInclude(d => d!.UnidadEjecutora)
             .Include(u => u.UsuarioRoles).ThenInclude(ur => ur.Rol)
             .Include(u => u.UsuarioPermisos).ThenInclude(up => up.Permiso)
@@ -57,10 +58,12 @@ public class UsuariosController : ControllerBase
                 IdGrado = u.IdGrado,
                 IdEscalafon = u.IdEscalafon,
                 IdDependencia = u.IdDependencia,
-                Grado = u.Grado.Texto,
-                Escalafon = u.Escalafon.Nombre,
-                UnidadEjecutora = u.Dependencia!.UnidadEjecutora.Nombre,
-                Dependencia = u.Dependencia.Nombre,
+                IdTurnoAsignado = u.IdTurnoAsignado,
+                NombreTurnoAsignado = u.TurnoAsignado != null ? u.TurnoAsignado.Nombre : null,
+                Grado = u.Grado != null ? u.Grado.Texto : string.Empty,
+                Escalafon = u.Escalafon != null ? u.Escalafon.Nombre : string.Empty,
+                UnidadEjecutora = u.Dependencia != null && u.Dependencia.UnidadEjecutora != null ? u.Dependencia.UnidadEjecutora.Nombre : string.Empty,
+                Dependencia = u.Dependencia != null ? u.Dependencia.Nombre : string.Empty,
                 Roles = u.UsuarioRoles.Select(ur => ur.Rol.Nombre).ToList(),
                 PermisosDirectos = u.UsuarioPermisos.Select(up => up.Permiso.Nombre).ToList()
             })
@@ -79,10 +82,11 @@ public class UsuariosController : ControllerBase
         var u = await _context.Usuarios
             .Include(u => u.Grado)
             .Include(u => u.Escalafon)
+            .Include(u => u.TurnoAsignado)
             .Include(u => u.Dependencia).ThenInclude(d => d!.UnidadEjecutora)
             .Include(u => u.UsuarioRoles).ThenInclude(ur => ur.Rol)
             .Include(u => u.UsuarioPermisos).ThenInclude(up => up.Permiso)
-                .FirstOrDefaultAsync(x => x.NombreUsuario == ci);
+            .FirstOrDefaultAsync(x => x.NombreUsuario == ci);
 
         if (u == null)
             return NotFound(new { mensaje = "Usuario no encontrado." });
@@ -106,10 +110,12 @@ public class UsuariosController : ControllerBase
             IdGrado = u.IdGrado,
             IdEscalafon = u.IdEscalafon,
             IdDependencia = u.IdDependencia,
-            Grado = u.Grado.Texto,
-            Escalafon = u.Escalafon.Nombre,
-            UnidadEjecutora = u.Dependencia!.UnidadEjecutora.Nombre,
-            Dependencia = u.Dependencia.Nombre,
+            IdTurnoAsignado = u.IdTurnoAsignado,
+            NombreTurnoAsignado = u.TurnoAsignado != null ? u.TurnoAsignado.Nombre : null,
+            Grado = u.Grado != null ? u.Grado.Texto : string.Empty,
+            Escalafon = u.Escalafon != null ? u.Escalafon.Nombre : string.Empty,
+            UnidadEjecutora = u.Dependencia != null && u.Dependencia.UnidadEjecutora != null ? u.Dependencia.UnidadEjecutora.Nombre : string.Empty,
+            Dependencia = u.Dependencia != null ? u.Dependencia.Nombre : string.Empty,
             Roles = u.UsuarioRoles.Select(ur => ur.Rol.Nombre).ToList(),
             PermisosDirectos = u.UsuarioPermisos.Select(up => up.Permiso.Nombre).ToList()
         };
@@ -168,7 +174,8 @@ public class UsuariosController : ControllerBase
             FechaCreacion = DateTime.UtcNow,
             IdGrado = dto.IdGrado,
             IdEscalafon = dto.IdEscalafon,
-            IdDependencia = dto.IdDependencia
+            IdDependencia = dto.IdDependencia,
+            IdTurnoAsignado = dto.IdTurnoAsignado
         };
 
         _context.Usuarios.Add(usuario);
@@ -235,6 +242,7 @@ public class UsuariosController : ControllerBase
         usuario.IdGrado = dto.IdGrado;
         usuario.IdEscalafon = dto.IdEscalafon;
         usuario.IdDependencia = dto.IdDependencia;
+        usuario.IdTurnoAsignado = dto.IdTurnoAsignado;
 
         // Actualizar Roles (Reemplazar asignaciones anteriores)
         _context.Set<UsuarioRol>().RemoveRange(usuario.UsuarioRoles);
@@ -268,6 +276,27 @@ public class UsuariosController : ControllerBase
     /// <summary>
     /// Cambiar el estado de Habilitado/Deshabilitado de un usuario (Bloqueo/Desbloqueo).
     /// </summary>
+    [HttpPatch("{ci}/turno")]
+    [RequirePermission("admin.dependencias.gestion")]
+    public async Task<IActionResult> CambiarTurnoAsignado(string ci, [FromBody] AsignarTurnoUsuarioDto dto)
+    {
+        var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.NombreUsuario == ci);
+        if (usuario == null)
+            return NotFound(new { mensaje = "Usuario no encontrado." });
+
+        if (dto.IdTurnoAsignado.HasValue)
+        {
+            var turnoExiste = await _context.Turnos.AnyAsync(t => t.IdTurno == dto.IdTurnoAsignado.Value && t.Habilitado);
+            if (!turnoExiste)
+                return BadRequest(new { mensaje = "El turno asignado no existe o no está habilitado." });
+        }
+
+        usuario.IdTurnoAsignado = dto.IdTurnoAsignado;
+        await _context.SaveChangesAsync();
+
+        return Ok(new { mensaje = "Turno del funcionario actualizado correctamente." });
+    }
+
     [HttpPatch("{ci}/estado")]
     [RequirePermission("admin.usuarios.leer")]
     public async Task<IActionResult> CambiarEstado(string ci, [FromBody] CambiarEstadoUsuarioDto dto)

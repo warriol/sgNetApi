@@ -42,6 +42,9 @@ public class Usuario
     public int? IdDependencia { get; set; }
     public Dependencia? Dependencia { get; set; }
 
+    public int? IdTurnoAsignado { get; set; }
+    public Turno? TurnoAsignado { get; set; }
+
     // Colecciones / Relaciones
     public ICollection<UsuarioRol> UsuarioRoles { get; set; } = new List<UsuarioRol>();
     public ICollection<UsuarioPermiso> UsuarioPermisos { get; set; } = new List<UsuarioPermiso>();

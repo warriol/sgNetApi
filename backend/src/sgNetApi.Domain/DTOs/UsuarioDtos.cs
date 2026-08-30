@@ -19,6 +19,8 @@ public class UsuarioDetalleDto
     public int? IdGrado { get; set; }
     public int? IdEscalafon { get; set; }
     public int? IdDependencia { get; set; }
+    public int? IdTurnoAsignado { get; set; }
+    public string? NombreTurnoAsignado { get; set; }
     
     // Nombres legibles de las dependencias
     public string Grado { get; set; } = string.Empty;
@@ -47,6 +49,7 @@ public class CrearUsuarioDto
     public int? IdGrado { get; set; }
     public int? IdEscalafon { get; set; }
     public int? IdDependencia { get; set; }
+    public int? IdTurnoAsignado { get; set; }
 
     public List<int> IdsRoles { get; set; } = new();
     public List<int> IdsPermisosDirectos { get; set; } = new();
@@ -66,9 +69,15 @@ public class EditarUsuarioDto
     public int? IdGrado { get; set; }
     public int? IdEscalafon { get; set; }
     public int? IdDependencia { get; set; }
+    public int? IdTurnoAsignado { get; set; }
 
     public List<int> IdsRoles { get; set; } = new();
     public List<int> IdsPermisosDirectos { get; set; } = new();
+}
+
+public class AsignarTurnoUsuarioDto
+{
+    public int? IdTurnoAsignado { get; set; }
 }
 
 public class CambiarEstadoUsuarioDto

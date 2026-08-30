@@ -1,0 +1,77 @@
+<section class="admin-panel">
+  <div class="panel-header">
+    <div>
+      <p class="eyebrow">Administración</p>
+      <h2>Dependencias</h2>
+    </div>
+    <button class="btn btn-primary" (click)="nueva()">Nueva dependencia</button>
+  </div>
+
+  <div *ngIf="mensaje" class="alert">{{ mensaje }}</div>
+
+  <div class="layout-grid" *ngIf="!cargando; else cargandoTpl">
+    <aside class="sidebar-list">
+      <div *ngFor="let item of dependencias" class="list-item" [class.active]="seleccionada?.idDependencia === item.idDependencia" (click)="seleccionar(item)">
+        <strong>{{ item.nombre }}</strong>
+        <small>{{ item.siglas }} · {{ item.nombreUuee }}</small>
+      </div>
+    </aside>
+
+    <div class="panel-form">
+      <form (ngSubmit)="guardar()">
+        <div class="field-grid">
+          <label>
+            Unidad ejecutora
+            <select [(ngModel)]="formulario.idUuee" name="idUuee">
+              <option [ngValue]="null">Seleccione...</option>
+              <option *ngFor="let u of unidadesEjecutoras" [ngValue]="u.idUuee">{{ u.nombre }} ({{ u.siglas }})</option>
+            </select>
+          </label>
+
+          <label>
+            Nombre
+            <input [(ngModel)]="formulario.nombre" name="nombre" />
+          </label>
+
+          <label>
+            Siglas
+            <input [(ngModel)]="formulario.siglas" name="siglas" />
+          </label>
+
+          <label>
+            Dirección asociada
+            <input [(ngModel)]="formulario.idDireccion" name="idDireccion" type="number" />
+          </label>
+
+          <label>
+            Jefe
+            <input [(ngModel)]="formulario.nombreUsuarioJefe" name="nombreUsuarioJefe" />
+          </label>
+
+          <label>
+            Segundo jefe
+            <input [(ngModel)]="formulario.nombreUsuarioSegundoJefe" name="nombreUsuarioSegundoJefe" />
+          </label>
+
+          <label>
+            Turno
+            <select [(ngModel)]="formulario.idTurno" name="idTurno">
+              <option [ngValue]="null">Sin turno</option>
+              <option *ngFor="let turno of turnos" [ngValue]="turno.idTurno">{{ turno.nombre }}</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="actions">
+          <button type="submit" class="btn btn-primary" [disabled]="guardando">{{ guardando ? 'Guardando...' : 'Guardar' }}</button>
+          <button type="button" class="btn btn-secondary" (click)="nueva()">Limpiar</button>
+          <button *ngIf="seleccionada" type="button" class="btn btn-danger" (click)="eliminar(seleccionada)">Eliminar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <ng-template #cargandoTpl>
+    <div class="loading">Cargando dependencias...</div>
+  </ng-template>
+</section>

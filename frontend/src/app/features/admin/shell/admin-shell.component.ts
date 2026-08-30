@@ -26,6 +26,7 @@ export class AdminShellComponent implements OnInit {
 
   ngOnInit(): void {
     this.permisosUsuario = this.authService.obtenerPermisosDelToken();
+    this.rolesUsuario = this.authService.obtenerRolesDelToken();
     this.cargarDatosUsuario();
   }
 
@@ -46,11 +47,7 @@ export class AdminShellComponent implements OnInit {
     const token = this.authService.obtenerToken();
     if (token) {
       try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        
-        // Extraer Roles del JWT
-        const roles = payload.role || payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
-        this.rolesUsuario = Array.isArray(roles) ? roles : [roles];
+        const payload = JSON.parse(this.decodificarPayload(token));
 
         this.usuarioActual = {
           nombre: payload.name || 'Wilson Denis Arriola',
@@ -60,5 +57,13 @@ export class AdminShellComponent implements OnInit {
         // Fallback en caso de error
       }
     }
+  }
+
+  private decodificarPayload(token: string): string {
+    const segmento = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+    const padding = segmento.length % 4;
+    const base64 = padding ? segmento.padEnd(segmento.length + 4 - padding, '=') : segmento;
+    const bytes = Uint8Array.from(atob(base64), (caracter) => caracter.charCodeAt(0));
+    return new TextDecoder().decode(bytes);
   }
 }
