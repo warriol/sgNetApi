@@ -43,7 +43,9 @@
 ## Turnos
 - Catálogo de turnos con tipos: 4x6, 3x8, 2x12, 1x24.
 - Nombre explicativo por patrón de operación.
-- Hora de inicio y hora de fin configurables.
+- La hora de inicio es obligatoria y la hora de fin se calcula automáticamente según el tipo de turno y la hora de inicio.
+- La hora fin no se ingresa manualmente; el sistema deriva el cierre y lo presenta como valor readonly en la interfaz.
+- Si el turno cruza medianoche, la UI informa que el cierre puede corresponder al día siguiente.
 - Habilitado/deshabilitado para evitar eliminación física en uso.
 
 ## Escalafón

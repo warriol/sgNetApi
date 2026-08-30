@@ -134,10 +134,13 @@ Cuando `TipoDireccion = 1`, el usuario selecciona un punto en el mapa y se guard
 Catálogo de turnos y horarios disponibles para las dependencias.
 * **`IdTurno`** (`int`, PK, Identity): Identificador único.
 * **`Nombre`** (`string`, Varchar(100), Unique, Not Null): Nombre del turno.
+* **`TipoTurno`** (`string`, Varchar(20), Not Null): Variante operativa del turno (`4x6`, `3x8`, `2x12`, `1x24`).
 * **`HoraInicio`** (`TimeOnly`, Not Null): Hora de inicio.
-* **`HoraFin`** (`TimeOnly`, Not Null): Hora de finalización.
+* **`HoraFin`** (`TimeOnly`, Not Null): Hora de finalización calculada automáticamente por el sistema.
 * **`Descripcion`** (`string?`, Varchar(255), Nullable).
 * **`Habilitado`** (`bool`, Default: `true`): Permite retirar un turno del selector sin eliminarlo físicamente.
+
+Regla operativa del sistema: la hora de fin no se ingresa manualmente por el usuario. Se deriva a partir de `TipoTurno` + `HoraInicio`, con la duración del turno en minutos y el ajuste de cierre en el caso de que el turno cruce medianoche. Por ejemplo: un turno `3x8` que inicia a las `21:00` finaliza a las `04:59` del día siguiente; un turno `2x12` que inicia a las `08:00` finaliza a las `19:59`.
 
 ### Relaciones del módulo de Dependencias
 * `Usuario.IdDependencia` referencia a `Dependencia.IdDependencia`; una dependencia puede tener muchos funcionarios y un usuario solo uno.
@@ -217,8 +220,11 @@ $$\text{PermisosEfectivos}(u) = \left( \bigcup_{r \in \text{Roles}(u)} \text{Per
 1. Los turnos se crean y administran previamente desde el módulo de Turnos.
 2. Una dependencia no puede asignar un turno inexistente o deshabilitado.
 3. No se puede asignar un turno a una dependencia hasta que exista al menos un turno habilitado en el catálogo.
-4. `HoraInicio` y `HoraFin` son obligatorias. El sistema debe validar si se permiten turnos que atraviesan medianoche según la regla operativa definida.
-5. Un turno utilizado por una dependencia no debe eliminarse físicamente; debe deshabilitarse.
+4. `TipoTurno` es obligatorio y solo admite los valores `4x6`, `3x8`, `2x12` y `1x24`.
+5. `HoraInicio` es obligatoria. `HoraFin` se calcula automáticamente a partir del tipo y la hora de inicio; no se debe solicitar ni guardar manualmente como dato de entrada.
+6. La duración efectiva del turno se calcula con la regla operativa del sistema: `4x6 = 6 horas`, `3x8 = 8 horas`, `2x12 = 12 horas`, `1x24 = 24 horas`, y el cierre se calcula descontando un minuto del intervalo final para mantener continuidad operativa (ej.: `08:00` + `12 horas` = `19:59`).
+7. Si el turno cruza la medianoche, el sistema debe mostrar que el cierre puede corresponder al día siguiente; la UI debe indicar este comportamiento para evitar confusión al operador.
+8. Un turno utilizado por una dependencia no debe eliminarse físicamente; debe deshabilitarse.
 
 ### 4.8 Flujo de completitud de una Dependencia
 Una dependencia se considera `Incompleta` mientras no cumpla todas las condiciones siguientes:

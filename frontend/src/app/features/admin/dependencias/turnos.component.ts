@@ -24,7 +24,7 @@ export class DependenciasTurnosComponent implements OnInit {
     nombre: '',
     tipoTurno: '4x6',
     horaInicio: '08:00',
-    horaFin: '16:00',
+    horaFin: null,
     descripcion: '',
     habilitado: true
   };
@@ -42,7 +42,10 @@ export class DependenciasTurnosComponent implements OnInit {
     this.cargando = true;
     this.dependenciaService.getTurnos().subscribe({
       next: (turnos) => {
-        this.turnos = turnos;
+        this.turnos = turnos.map((turno) => ({
+          ...turno,
+          horaFin: turno.horaFin ?? this.calcularHoraFin(turno.tipoTurno, turno.horaInicio)
+        }));
         this.cargando = false;
       },
       error: () => {
@@ -52,13 +55,27 @@ export class DependenciasTurnosComponent implements OnInit {
     });
   }
 
+  calcularHoraFin(tipoTurno: string, horaInicio: string): string {
+    if (!horaInicio) {
+      return '00:00';
+    }
+
+    const horas = tipoTurno === '4x6' ? 6 : tipoTurno === '3x8' ? 8 : tipoTurno === '2x12' ? 12 : 24;
+    const [hora, minuto] = horaInicio.split(':').map(Number);
+    const inicio = new Date();
+    inicio.setHours(hora, minuto, 0, 0);
+    inicio.setMinutes(inicio.getMinutes() + (horas * 60) - 1);
+
+    return `${String(inicio.getHours()).padStart(2, '0')}:${String(inicio.getMinutes()).padStart(2, '0')}`;
+  }
+
   seleccionar(turno: Turno): void {
     this.seleccionada = turno;
     this.formulario = {
       nombre: turno.nombre,
       tipoTurno: turno.tipoTurno ?? '4x6',
       horaInicio: turno.horaInicio,
-      horaFin: turno.horaFin,
+      horaFin: turno.horaFin ?? this.calcularHoraFin(turno.tipoTurno, turno.horaInicio),
       descripcion: turno.descripcion ?? '',
       habilitado: turno.habilitado
     };
@@ -70,17 +87,28 @@ export class DependenciasTurnosComponent implements OnInit {
       nombre: '',
       tipoTurno: '4x6',
       horaInicio: '08:00',
-      horaFin: '16:00',
+      horaFin: this.calcularHoraFin('4x6', '08:00'),
       descripcion: '',
       habilitado: true
     };
   }
 
-  guardar(): void {
-    if (!this.formulario.nombre || !this.formulario.tipoTurno || !this.formulario.horaInicio || !this.formulario.horaFin) {
-      this.mensaje = 'Debe completar nombre, tipo y horarios del turno.';
+  actualizarHoraFinEstimado(): void {
+    if (!this.formulario.tipoTurno || !this.formulario.horaInicio) {
+      this.formulario.horaFin = null;
       return;
     }
+
+    this.formulario.horaFin = this.calcularHoraFin(this.formulario.tipoTurno, this.formulario.horaInicio);
+  }
+
+  guardar(): void {
+    if (!this.formulario.nombre || !this.formulario.tipoTurno || !this.formulario.horaInicio) {
+      this.mensaje = 'Debe completar nombre, tipo y hora de inicio del turno.';
+      return;
+    }
+
+    this.actualizarHoraFinEstimado();
 
     this.guardando = true;
     const solicitud = this.seleccionada

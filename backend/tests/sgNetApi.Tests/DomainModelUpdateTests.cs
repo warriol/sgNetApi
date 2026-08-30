@@ -7,6 +7,15 @@ namespace sgNetApi.Tests;
 public class DomainModelUpdateTests
 {
     [Fact]
+    public void DerivedTurnoFin_ShouldFollowTypeAndStartTime()
+    {
+        Assert.Equal(new TimeOnly(13, 59), TurnoHelper.CalcularHoraFin("3x8", new TimeOnly(6, 0)));
+        Assert.Equal(new TimeOnly(5, 58), TurnoHelper.CalcularHoraFin("3x8", new TimeOnly(21, 59)));
+        Assert.Equal(new TimeOnly(11, 59), TurnoHelper.CalcularHoraFin("2x12", new TimeOnly(0, 0)));
+        Assert.Equal(new TimeOnly(5, 59), TurnoHelper.CalcularHoraFin("1x24", new TimeOnly(6, 0)));
+    }
+
+    [Fact]
     public async Task CanCreateCoreDomainEntitiesAndPersistThem()
     {
         var options = new DbContextOptionsBuilder<AppDbContext>()

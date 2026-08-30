@@ -68,15 +68,14 @@ public class TurnosController : ControllerBase
         if (!tipoValido.Contains(dto.TipoTurno))
             return BadRequest(new { mensaje = "El tipo de turno debe ser uno de: 4x6, 3x8, 2x12 o 1x24." });
 
-        if (dto.HoraFin <= dto.HoraInicio)
-            return BadRequest(new { mensaje = "La hora de finalización debe ser mayor que la hora de inicio." });
+        var horaFinCalculada = TurnoHelper.CalcularHoraFin(dto.TipoTurno, dto.HoraInicio);
 
         var turno = new Turno
         {
             Nombre = dto.Nombre.Trim(),
             TipoTurno = dto.TipoTurno,
             HoraInicio = dto.HoraInicio,
-            HoraFin = dto.HoraFin,
+            HoraFin = horaFinCalculada,
             Descripcion = dto.Descripcion,
             Habilitado = dto.Habilitado
         };
@@ -98,9 +97,6 @@ public class TurnosController : ControllerBase
         if (string.IsNullOrWhiteSpace(dto.Nombre))
             return BadRequest(new { mensaje = "El nombre del turno es obligatorio." });
 
-        if (dto.HoraFin <= dto.HoraInicio)
-            return BadRequest(new { mensaje = "La hora de finalización debe ser mayor que la hora de inicio." });
-
         var tipoValido = new[] { "4x6", "3x8", "2x12", "1x24" };
         if (!tipoValido.Contains(dto.TipoTurno))
             return BadRequest(new { mensaje = "El tipo de turno debe ser uno de: 4x6, 3x8, 2x12 o 1x24." });
@@ -108,7 +104,7 @@ public class TurnosController : ControllerBase
         turno.Nombre = dto.Nombre.Trim();
         turno.TipoTurno = dto.TipoTurno;
         turno.HoraInicio = dto.HoraInicio;
-        turno.HoraFin = dto.HoraFin;
+        turno.HoraFin = TurnoHelper.CalcularHoraFin(dto.TipoTurno, dto.HoraInicio);
         turno.Descripcion = dto.Descripcion;
         turno.Habilitado = dto.Habilitado;
 

@@ -28,7 +28,7 @@ export interface Turno {
   nombre: string;
   tipoTurno: '4x6' | '3x8' | '2x12' | '1x24';
   horaInicio: string;
-  horaFin: string;
+  horaFin?: string;
   descripcion?: string;
   habilitado: boolean;
 }

@@ -55,6 +55,8 @@ sgNetApi/
   - 2 turnos de 12 hs
   - 1 turno de 24 hs
 - Nombre explicativo de turnos para su selección posterior en la dependencia.
+- La hora de fin se calcula automáticamente según el tipo de turno y la hora de inicio; no se ingresa manualmente.
+- Si el turno cruza medianoche, el sistema lo informa claramente para evitar errores de configuración.
 - Asignación de turno a la dependencia.
 
 ## Escalafón

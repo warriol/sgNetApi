@@ -27,20 +27,25 @@
 
           <label>
             Tipo de turno
-            <select [(ngModel)]="formulario.tipoTurno" name="tipoTurno">
+            <select [(ngModel)]="formulario.tipoTurno" name="tipoTurno" (ngModelChange)="actualizarHoraFinEstimado()">
               <option *ngFor="let tipo of tiposTurno" [ngValue]="tipo.value">{{ tipo.label }}</option>
             </select>
           </label>
 
           <label>
             Hora inicio
-            <input [(ngModel)]="formulario.horaInicio" name="horaInicio" type="time" />
+            <input [(ngModel)]="formulario.horaInicio" name="horaInicio" type="time" (ngModelChange)="actualizarHoraFinEstimado()" />
           </label>
 
           <label>
-            Hora fin
-            <input [(ngModel)]="formulario.horaFin" name="horaFin" type="time" />
+            Hora fin estimada
+            <input [ngModel]="formulario.horaFin" name="horaFin" type="time" readonly />
           </label>
+
+          <div class="field-help" style="grid-column: 1 / -1; background: #f4f7fb; border: 1px solid #dfe7f3; border-radius: 8px; padding: 12px 14px; color: #243b53; line-height: 1.5;">
+            <strong>Regla de cálculo:</strong> la hora de fin no se completa manualmente. Se deriva del tipo de turno y del horario de inicio. El cierre puede caer al día siguiente si el turno cruza la medianoche.<br>
+            <span>Ejemplo: 3 turnos de 8 hs iniciando a las 06:00 finaliza a las 13:59; si inicia a las 21:59 finaliza a las 05:58 del día siguiente.</span>
+          </div>
 
           <label>
             Descripción

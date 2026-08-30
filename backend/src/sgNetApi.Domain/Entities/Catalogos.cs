@@ -77,6 +77,25 @@ public class Turno
     public ICollection<Dependencia> Dependencias { get; set; } = new List<Dependencia>();
 }
 
+public static class TurnoHelper
+{
+    public static TimeOnly CalcularHoraFin(string tipoTurno, TimeOnly horaInicio)
+    {
+        var horasTipo = tipoTurno switch
+        {
+            "4x6" => 6,
+            "3x8" => 8,
+            "2x12" => 12,
+            "1x24" => 24,
+            _ => 24
+        };
+
+        var totalMinutos = (horasTipo * 60) - 1;
+        var fecha = DateTime.Today.Add(horaInicio.ToTimeSpan()).AddMinutes(totalMinutos);
+        return TimeOnly.FromTimeSpan(fecha.TimeOfDay);
+    }
+}
+
 public class Dependencia
 {
     public int IdDependencia { get; set; }
