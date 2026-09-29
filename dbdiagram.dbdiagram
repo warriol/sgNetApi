@@ -1,0 +1,1298 @@
+{
+  "version": "3.0.0",
+  "darkMode": true,
+  "gridEnabling": false,
+  "currentViewName": null,
+  "defaultView": {
+    "detailLevel": "All",
+    "relationshipMode": "All",
+    "tablePositions": [
+      {
+        "name": "persona",
+        "schemaName": "public",
+        "x": 1582.0126953125,
+        "y": 53
+      },
+      {
+        "name": "usuario",
+        "schemaName": "public",
+        "x": 795.3984375,
+        "y": 137
+      },
+      {
+        "name": "unidad_ejecutora",
+        "schemaName": "public",
+        "x": 12,
+        "y": 12
+      },
+      {
+        "name": "dependencia",
+        "schemaName": "public",
+        "x": 1582.0126953125,
+        "y": 1047
+      },
+      {
+        "name": "direccion",
+        "schemaName": "public",
+        "x": 2279.7490234375,
+        "y": 995
+      },
+      {
+        "name": "turno",
+        "schemaName": "public",
+        "x": 12,
+        "y": 186
+      },
+      {
+        "name": "nacionalidad",
+        "schemaName": "public",
+        "x": 12,
+        "y": 488
+      },
+      {
+        "name": "estado_civil",
+        "schemaName": "public",
+        "x": 12,
+        "y": 694
+      },
+      {
+        "name": "profesion",
+        "schemaName": "public",
+        "x": 12,
+        "y": 836
+      },
+      {
+        "name": "grado",
+        "schemaName": "public",
+        "x": 12,
+        "y": 978
+      },
+      {
+        "name": "escalafon",
+        "schemaName": "public",
+        "x": 12,
+        "y": 1184
+      },
+      {
+        "name": "rol",
+        "schemaName": "public",
+        "x": 12,
+        "y": 1358
+      },
+      {
+        "name": "permiso",
+        "schemaName": "public",
+        "x": 12,
+        "y": 1532
+      },
+      {
+        "name": "usuario_rol",
+        "schemaName": "public",
+        "x": 1582.0126953125,
+        "y": 2019
+      },
+      {
+        "name": "rol_permiso",
+        "schemaName": "public",
+        "x": 795.3984375,
+        "y": 632
+      },
+      {
+        "name": "usuario_permiso",
+        "schemaName": "public",
+        "x": 1582.0126953125,
+        "y": 2161
+      },
+      {
+        "name": "auditoria_log",
+        "schemaName": "public",
+        "x": 1582.0126953125,
+        "y": 1382
+      },
+      {
+        "name": "denuncia",
+        "schemaName": "public",
+        "x": 2971.95849609375,
+        "y": 94
+      },
+      {
+        "name": "denuncia_ubicacion",
+        "schemaName": "public",
+        "x": 2279.7490234375,
+        "y": 53
+      },
+      {
+        "name": "tipificacion_clasificacion",
+        "schemaName": "public",
+        "x": 12,
+        "y": 1726
+      },
+      {
+        "name": "tipificacion_complemento",
+        "schemaName": "public",
+        "x": 795.3984375,
+        "y": 775
+      },
+      {
+        "name": "denuncia_tipificacion",
+        "schemaName": "public",
+        "x": 1582.0126953125,
+        "y": 2303
+      },
+      {
+        "name": "regla_tipificacion_ficha",
+        "schemaName": "public",
+        "x": 795.3984375,
+        "y": 981
+      },
+      {
+        "name": "denuncia_interviniente",
+        "schemaName": "public",
+        "x": 3728.46435546875,
+        "y": 73
+      },
+      {
+        "name": "interviniente_domicilio",
+        "schemaName": "public",
+        "x": 12,
+        "y": 1964
+      },
+      {
+        "name": "denuncia_narracion",
+        "schemaName": "public",
+        "x": 3728.46435546875,
+        "y": 1747
+      },
+      {
+        "name": "denuncia_equipo_trabajo",
+        "schemaName": "public",
+        "x": 3728.46435546875,
+        "y": 1317
+      },
+      {
+        "name": "denuncia_arma",
+        "schemaName": "public",
+        "x": 3728.46435546875,
+        "y": 2401
+      },
+      {
+        "name": "denuncia_vehiculo",
+        "schemaName": "public",
+        "x": 3728.46435546875,
+        "y": 3581
+      },
+      {
+        "name": "denuncia_vehiculo_recuperacion",
+        "schemaName": "public",
+        "x": 1582.0126953125,
+        "y": 1748
+      },
+      {
+        "name": "denuncia_objeto",
+        "schemaName": "public",
+        "x": 3728.46435546875,
+        "y": 2927
+      },
+      {
+        "name": "denuncia_transito",
+        "schemaName": "public",
+        "x": 12,
+        "y": 3034
+      },
+      {
+        "name": "denuncia_transito_persona",
+        "schemaName": "public",
+        "x": 4385.73095703125,
+        "y": 410
+      },
+      {
+        "name": "denuncia_ampliacion",
+        "schemaName": "public",
+        "x": 3728.46435546875,
+        "y": 1111
+      },
+      {
+        "name": "denuncia_ampliacion_narracion",
+        "schemaName": "public",
+        "x": 4385.73095703125,
+        "y": 12
+      },
+      {
+        "name": "denuncia_control_calidad",
+        "schemaName": "public",
+        "x": 3728.46435546875,
+        "y": 4683
+      },
+      {
+        "name": "denuncia_cambio",
+        "schemaName": "public",
+        "x": 3728.46435546875,
+        "y": 5465
+      },
+      {
+        "name": "escolaridad",
+        "schemaName": "public",
+        "x": 12,
+        "y": 5771
+      },
+      {
+        "name": "tipo_documento",
+        "schemaName": "public",
+        "x": 12,
+        "y": 5949
+      },
+      {
+        "name": "situacion",
+        "schemaName": "public",
+        "x": 12,
+        "y": 6127
+      },
+      {
+        "name": "documento_persona",
+        "schemaName": "public",
+        "x": 12,
+        "y": 6305
+      },
+      {
+        "name": "sexo",
+        "schemaName": "public",
+        "x": 12,
+        "y": 6675
+      },
+      {
+        "name": "departamento",
+        "schemaName": "public",
+        "x": 12,
+        "y": 6821
+      },
+      {
+        "name": "localidad",
+        "schemaName": "public",
+        "x": 12,
+        "y": 6999
+      },
+      {
+        "name": "usuario_sesion",
+        "schemaName": "public",
+        "x": 12,
+        "y": 7177
+      },
+      {
+        "name": "situacion_policial",
+        "schemaName": "public",
+        "x": 12,
+        "y": 7483
+      }
+    ],
+    "tableGroupCollapseStates": [],
+    "stickyNoteLayouts": [],
+    "referencePaths": [
+      {
+        "firstFieldNames": [
+          "id_persona"
+        ],
+        "firstTableName": "usuario",
+        "firstSchemaName": "public",
+        "firstRelation": "1",
+        "secondFieldNames": [
+          "id_persona"
+        ],
+        "secondTableName": "persona",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_nacionalidad"
+        ],
+        "firstTableName": "persona",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id_nacionalidad"
+        ],
+        "secondTableName": "nacionalidad",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_estado_civil"
+        ],
+        "firstTableName": "persona",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id_estado_civil"
+        ],
+        "secondTableName": "estado_civil",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_profesion"
+        ],
+        "firstTableName": "persona",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id_profesion"
+        ],
+        "secondTableName": "profesion",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_dependencia"
+        ],
+        "firstTableName": "usuario",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id_dependencia"
+        ],
+        "secondTableName": "dependencia",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_grado"
+        ],
+        "firstTableName": "usuario",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id_grado"
+        ],
+        "secondTableName": "grado",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_escalafon"
+        ],
+        "firstTableName": "usuario",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id_escalafon"
+        ],
+        "secondTableName": "escalafon",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_turno_asignado"
+        ],
+        "firstTableName": "usuario",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id_turno"
+        ],
+        "secondTableName": "turno",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_uuee"
+        ],
+        "firstTableName": "dependencia",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id_uuee"
+        ],
+        "secondTableName": "unidad_ejecutora",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_direccion"
+        ],
+        "firstTableName": "dependencia",
+        "firstSchemaName": "public",
+        "firstRelation": "1",
+        "secondFieldNames": [
+          "id_direccion"
+        ],
+        "secondTableName": "direccion",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_turno"
+        ],
+        "firstTableName": "dependencia",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id_turno"
+        ],
+        "secondTableName": "turno",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "nombre_usuario_jefe"
+        ],
+        "firstTableName": "dependencia",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "nombre_usuario"
+        ],
+        "secondTableName": "usuario",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "nombre_usuario_segundo_jefe"
+        ],
+        "firstTableName": "dependencia",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "nombre_usuario"
+        ],
+        "secondTableName": "usuario",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "nombre_usuario"
+        ],
+        "firstTableName": "usuario_rol",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "nombre_usuario"
+        ],
+        "secondTableName": "usuario",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_rol"
+        ],
+        "firstTableName": "usuario_rol",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id_rol"
+        ],
+        "secondTableName": "rol",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_rol"
+        ],
+        "firstTableName": "rol_permiso",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id_rol"
+        ],
+        "secondTableName": "rol",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_permiso"
+        ],
+        "firstTableName": "rol_permiso",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id_permiso"
+        ],
+        "secondTableName": "permiso",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "nombre_usuario"
+        ],
+        "firstTableName": "usuario_permiso",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "nombre_usuario"
+        ],
+        "secondTableName": "usuario",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_permiso"
+        ],
+        "firstTableName": "usuario_permiso",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id_permiso"
+        ],
+        "secondTableName": "permiso",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "usuario_nombre_usuario"
+        ],
+        "firstTableName": "auditoria_log",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "nombre_usuario"
+        ],
+        "secondTableName": "usuario",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "creado_por"
+        ],
+        "firstTableName": "denuncia",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "nombre_usuario"
+        ],
+        "secondTableName": "usuario",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_sgsp"
+        ],
+        "firstTableName": "denuncia_ubicacion",
+        "firstSchemaName": "public",
+        "firstRelation": "1",
+        "secondFieldNames": [
+          "id_sgsp"
+        ],
+        "secondTableName": "denuncia",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_uuee"
+        ],
+        "firstTableName": "denuncia_ubicacion",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id_uuee"
+        ],
+        "secondTableName": "unidad_ejecutora",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_dependencia"
+        ],
+        "firstTableName": "denuncia_ubicacion",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id_dependencia"
+        ],
+        "secondTableName": "dependencia",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_sgsp"
+        ],
+        "firstTableName": "denuncia_tipificacion",
+        "firstSchemaName": "public",
+        "firstRelation": "1",
+        "secondFieldNames": [
+          "id_sgsp"
+        ],
+        "secondTableName": "denuncia",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_clasificacion"
+        ],
+        "firstTableName": "denuncia_tipificacion",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id_clasificacion"
+        ],
+        "secondTableName": "tipificacion_clasificacion",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_complemento"
+        ],
+        "firstTableName": "denuncia_tipificacion",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id_complemento"
+        ],
+        "secondTableName": "tipificacion_complemento",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_clasificacion"
+        ],
+        "firstTableName": "tipificacion_complemento",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id_clasificacion"
+        ],
+        "secondTableName": "tipificacion_clasificacion",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_clasificacion_padre"
+        ],
+        "firstTableName": "tipificacion_clasificacion",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id_clasificacion"
+        ],
+        "secondTableName": "tipificacion_clasificacion",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_clasificacion"
+        ],
+        "firstTableName": "regla_tipificacion_ficha",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id_clasificacion"
+        ],
+        "secondTableName": "tipificacion_clasificacion",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_sgsp"
+        ],
+        "firstTableName": "denuncia_interviniente",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id_sgsp"
+        ],
+        "secondTableName": "denuncia",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_persona"
+        ],
+        "firstTableName": "denuncia_interviniente",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id_persona"
+        ],
+        "secondTableName": "persona",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "nombre_usuario"
+        ],
+        "firstTableName": "denuncia_interviniente",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "nombre_usuario"
+        ],
+        "secondTableName": "usuario",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_interviniente"
+        ],
+        "firstTableName": "interviniente_domicilio",
+        "firstSchemaName": "public",
+        "firstRelation": "1",
+        "secondFieldNames": [
+          "id_interviniente"
+        ],
+        "secondTableName": "denuncia_interviniente",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_sgsp"
+        ],
+        "firstTableName": "denuncia_narracion",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id_sgsp"
+        ],
+        "secondTableName": "denuncia",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_usuario"
+        ],
+        "firstTableName": "denuncia_narracion",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "nombre_usuario"
+        ],
+        "secondTableName": "usuario",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_sgsp"
+        ],
+        "firstTableName": "denuncia_equipo_trabajo",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id_sgsp"
+        ],
+        "secondTableName": "denuncia",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "usuario"
+        ],
+        "firstTableName": "denuncia_equipo_trabajo",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "nombre_usuario"
+        ],
+        "secondTableName": "usuario",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_sgsp"
+        ],
+        "firstTableName": "denuncia_arma",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id_sgsp"
+        ],
+        "secondTableName": "denuncia",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_sgsp"
+        ],
+        "firstTableName": "denuncia_vehiculo",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id_sgsp"
+        ],
+        "secondTableName": "denuncia",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_vehiculo"
+        ],
+        "firstTableName": "denuncia_vehiculo_recuperacion",
+        "firstSchemaName": "public",
+        "firstRelation": "1",
+        "secondFieldNames": [
+          "id_vehiculo"
+        ],
+        "secondTableName": "denuncia_vehiculo",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_usuario"
+        ],
+        "firstTableName": "denuncia_vehiculo_recuperacion",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "nombre_usuario"
+        ],
+        "secondTableName": "usuario",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_sgsp"
+        ],
+        "firstTableName": "denuncia_objeto",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id_sgsp"
+        ],
+        "secondTableName": "denuncia",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_sgsp"
+        ],
+        "firstTableName": "denuncia_transito",
+        "firstSchemaName": "public",
+        "firstRelation": "1",
+        "secondFieldNames": [
+          "id_sgsp"
+        ],
+        "secondTableName": "denuncia",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_transito"
+        ],
+        "firstTableName": "denuncia_transito_persona",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id_transito"
+        ],
+        "secondTableName": "denuncia_transito",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_interviniente"
+        ],
+        "firstTableName": "denuncia_transito_persona",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id_interviniente"
+        ],
+        "secondTableName": "denuncia_interviniente",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_sgsp"
+        ],
+        "firstTableName": "denuncia_ampliacion",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id_sgsp"
+        ],
+        "secondTableName": "denuncia",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_usuario"
+        ],
+        "firstTableName": "denuncia_ampliacion",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "nombre_usuario"
+        ],
+        "secondTableName": "usuario",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_ampliacion"
+        ],
+        "firstTableName": "denuncia_ampliacion_narracion",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id_ampliacion"
+        ],
+        "secondTableName": "denuncia_ampliacion",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_usuario"
+        ],
+        "firstTableName": "denuncia_ampliacion_narracion",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "nombre_usuario"
+        ],
+        "secondTableName": "usuario",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_sgsp"
+        ],
+        "firstTableName": "denuncia_control_calidad",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id_sgsp"
+        ],
+        "secondTableName": "denuncia",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_usuario"
+        ],
+        "firstTableName": "denuncia_control_calidad",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "nombre_usuario"
+        ],
+        "secondTableName": "usuario",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_sgsp"
+        ],
+        "firstTableName": "denuncia_cambio",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id_sgsp"
+        ],
+        "secondTableName": "denuncia",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_usuario"
+        ],
+        "firstTableName": "denuncia_cambio",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "nombre_usuario"
+        ],
+        "secondTableName": "usuario",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_persona"
+        ],
+        "firstTableName": "documento_persona",
+        "firstSchemaName": "public",
+        "firstRelation": "1",
+        "secondFieldNames": [
+          "id_persona"
+        ],
+        "secondTableName": "persona",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_tipo_documento"
+        ],
+        "firstTableName": "documento_persona",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id_tipo_documento"
+        ],
+        "secondTableName": "tipo_documento",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_pais_emision"
+        ],
+        "firstTableName": "documento_persona",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id_nacionalidad"
+        ],
+        "secondTableName": "nacionalidad",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_escolaridad"
+        ],
+        "firstTableName": "persona",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id_escolaridad"
+        ],
+        "secondTableName": "escolaridad",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_sexo"
+        ],
+        "firstTableName": "persona",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id_sexo"
+        ],
+        "secondTableName": "sexo",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_pais_nacimiento"
+        ],
+        "firstTableName": "persona",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id_nacionalidad"
+        ],
+        "secondTableName": "nacionalidad",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_departamento_nacimiento"
+        ],
+        "firstTableName": "persona",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id_departamento"
+        ],
+        "secondTableName": "departamento",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_localidad_nacimiento"
+        ],
+        "firstTableName": "persona",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id_localidad"
+        ],
+        "secondTableName": "localidad",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_situacion"
+        ],
+        "firstTableName": "persona",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id_situacion"
+        ],
+        "secondTableName": "situacion",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "nombre_usuario"
+        ],
+        "firstTableName": "usuario_sesion",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "nombre_usuario"
+        ],
+        "secondTableName": "usuario",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_situacion_policial"
+        ],
+        "firstTableName": "usuario",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id_situacion_policial"
+        ],
+        "secondTableName": "situacion_policial",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_direccion"
+        ],
+        "firstTableName": "persona",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id_direccion"
+        ],
+        "secondTableName": "direccion",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      },
+      {
+        "firstFieldNames": [
+          "id_direccion"
+        ],
+        "firstTableName": "denuncia",
+        "firstSchemaName": "public",
+        "firstRelation": "*",
+        "secondFieldNames": [
+          "id_direccion"
+        ],
+        "secondTableName": "direccion",
+        "secondSchemaName": "public",
+        "secondRelation": "1",
+        "checkPoints": []
+      }
+    ]
+  },
+  "views": {}
+}

@@ -3,6 +3,7 @@ import { authGuard } from './core/guards/auth.guard';
 import { LandingComponent } from './features/landing/landing.component';
 import { AdminShellComponent } from './features/admin/shell/admin-shell.component';
 import { catalogosGuard } from './core/guards/catalogos.guard';
+import { ingresoGuard } from './core/guards/ingreso.guard';
 
 export const routes: Routes = [
   { path: '', component: LandingComponent },
@@ -17,6 +18,14 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/admin/dashboard/dashboard.component').then(
             (m) => m.DashboardComponent
+          )
+      },
+      {
+        path: 'ingreso',
+        canActivate: [ingresoGuard],
+        loadComponent: () =>
+          import('./features/ingreso/ingreso.component').then(
+            (m) => m.IngresoComponent
           )
       },
       {

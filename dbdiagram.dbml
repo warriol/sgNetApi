@@ -1,0 +1,699 @@
+Table persona {
+  id_persona bigint [pk, increment]
+  id_profesion int
+  id_nacionalidad int [not null]
+  id_direccion int
+  
+  id_pais_nacimiento int
+  id_departamento_nacimiento int            // nullable: solo se completa si id_pais_nacimiento = 1 (Uruguay)
+  id_localidad_nacimiento int               // nullable: solo se completa si id_pais_nacimiento = 1 (Uruguay)
+
+  id_estado_civil int
+  id_escolaridad int
+  id_situacion int
+
+  primer_nombre varchar(100)
+  segundo_nombre varchar(100)
+  primer_apellido varchar(100)
+  segundo_apellido varchar(100)
+
+
+  id_sexo int [not null]
+  fecha_nacimiento date
+  // edad int - es un atributo calculado, no se almacena en la base de datos
+  correo_electronico varchar(150)           // debe ser correo personal, no institucional
+  celular varchar(30)
+  telefono varchar(30)
+
+
+  madre varchar(200)
+  padre varchar(200)
+
+  firma text
+  foto text
+  nombre_completo varchar(250)
+  nombre_en_cedula varchar(250)
+
+}
+
+Table usuario {
+  nombre_usuario varchar(50) [pk]
+  id_persona bigint [not null, unique]                              // unique, no puede haber dos usuarios con la misma persona
+
+  correo_institucional varchar(150) [unique, not null]              // debe ser correo institucional, no personal
+  password_hash varchar(255) [not null]
+
+  habilitado boolean [not null, default: true]
+  expirado_por_inactividad boolean [not null, default: false]
+  intentos_fallidos int [not null, default: 0]
+  // fecha_expiracion timestamp - es un atributo calculado, no se almacena en la base de datos
+  id_situacion_policial int
+
+  fecha_creacion timestamp [not null]
+  ultimo_acceso timestamp
+
+  id_dependencia int
+  id_grado int
+  id_escalafon int
+  id_turno_asignado int
+}
+
+Table situacion_policial {
+  id_situacion_policial int [pk]
+  nombre varchar(100) [unique, not null]
+  descripcion varchar(255)
+}
+
+Table usuario_sesion {
+  id_sesion bigint [pk, increment]
+  nombre_usuario varchar(50) [not null]
+  fecha_inicio timestamp [not null]
+  fecha_fin timestamp
+  ip_origen varchar(45) [not null]
+  token_acceso varchar(255) [not null]
+  token_refresh varchar(255) [not null]
+}
+
+Table unidad_ejecutora {
+  id_uuee int [pk]
+  nombre varchar(150) [not null]
+  siglas varchar(20) [not null]
+}
+
+Table dependencia {
+  id_dependencia int [pk]
+  id_uuee int [not null]
+  nombre varchar(150) [not null]
+  siglas varchar(20) [not null]
+  id_direccion int
+  nombre_usuario_jefe varchar(50)
+  nombre_usuario_segundo_jefe varchar(50)
+  id_turno int
+}
+
+Table direccion {
+  id_direccion int [pk]
+  tipo_direccion int [not null]
+  tipo_ubicacion varchar(100)
+  pais jsonb
+  departamento jsonb
+  localidad jsonb
+  calle varchar(150)
+  numero varchar(20)
+  esquina1 varchar(150)
+  esquina2 varchar(150)
+  bis boolean [not null, default: false]
+  padron varchar(50)
+  segmento varchar(50)
+  barrio_paraje varchar(150)
+  block varchar(50)
+  senda varchar(100)
+  apartamento varchar(20)
+  manzana varchar(30)
+  solar varchar(30)
+  direccion_extranjera boolean [not null, default: false]
+  direccion_extranjera_completa text
+  ruta varchar(100)
+  kilometro numeric(10,3)
+  balneario varchar(100)
+  barrio varchar(100)
+  jurisdiccion jsonb
+  id_lugar int
+  coordenada_x numeric(12,8)
+  coordenada_y numeric(12,8)
+  codigo_postal varchar(20)
+  telefono_particular varchar(30)
+  telefono_celular varchar(30)
+  telefono varchar(20)
+  observaciones text
+}
+
+Table sexo {
+  id_sexo int [pk]
+  nombre varchar(50) [unique, not null]
+}
+
+Table turno {
+  id_turno int [pk]
+  nombre varchar(100) [unique, not null]
+  tipo_turno varchar(20) [not null]
+  hora_inicio time [not null]
+  hora_fin time [not null]
+  descripcion varchar(255)
+  habilitado boolean [not null, default: true]
+}
+
+Table situacion {
+  id_situacion int [pk]
+  nombre varchar(100) [unique, not null]
+  descripcion varchar(255)
+}
+
+Table documento_persona {
+  id_documento int [pk, increment]
+  id_persona bigint [not null]
+  id_tipo_documento int [not null]
+  id_pais_emision int [not null]
+  numero varchar(50) [not null]
+  fecha_emision date
+  fecha_vencimiento date
+  es_principal boolean [not null, default: false]
+  verificado boolean [not null, default: false]
+
+    indexes {
+        (id_tipo_documento, id_pais_emision, numero) [unique]
+    }
+}
+
+Table escolaridad {
+  id_escolaridad int [pk]
+  nombre varchar(100) [unique, not null]
+  descripcion varchar(255)
+}
+
+Table tipo_documento {
+  id_tipo_documento int [pk]
+  nombre varchar(100) [unique, not null]
+  descripcion varchar(255)
+}
+
+Table nacionalidad {
+  id_nacionalidad int [pk]
+  nombre varchar(100) [unique, not null]
+  codigo_iso varchar(3) [unique, not null]
+}
+
+Table departamento {
+  id_departamento int [pk]
+  nombre varchar(100) [unique, not null]
+  id_nacionalidad int [not null]
+}
+
+Table localidad {
+  id_localidad int [pk]
+  nombre varchar(100) [not null]
+  id_departamento int [not null]
+
+  indexes {
+    (nombre, id_departamento) [unique]
+  }
+}
+
+Table estado_civil {
+  id_estado_civil int [pk]
+  nombre varchar(50) [unique, not null]
+}
+
+Table profesion {
+  id_profesion int [pk]
+  nombre varchar(100) [unique, not null]
+}
+
+Table grado {
+  id_grado int [pk]
+  numero int [not null]
+  texto varchar(100) [not null]
+  abreviatura varchar(20) [not null]
+}
+
+Table escalafon {
+  id_escalafon int [pk]
+  nombre varchar(100) [not null]
+  abreviatura varchar(10) [not null]
+}
+
+Table rol {
+  id_rol int [pk]
+  nombre varchar(50) [unique, not null]
+  descripcion varchar(255)
+}
+
+Table permiso {
+  id_permiso int [pk]
+  nombre varchar(100) [unique, not null]
+  descripcion varchar(255) [not null]
+}
+
+Table usuario_rol {
+  nombre_usuario varchar(50) [not null]
+  id_rol int [not null]
+
+  indexes {
+    (nombre_usuario, id_rol) [pk]
+  }
+}
+
+Table rol_permiso {
+  id_rol int [not null]
+  id_permiso int [not null]
+
+  indexes {
+    (id_rol, id_permiso) [pk]
+  }
+}
+
+Table usuario_permiso {
+  nombre_usuario varchar(50) [not null]
+  id_permiso int [not null]
+
+  indexes {
+    (nombre_usuario, id_permiso) [pk]
+  }
+}
+
+Table auditoria_log {
+  id_log bigint [pk, increment]
+  fecha timestamp [not null]
+  usuario_nombre_usuario varchar(50)
+  ip_origen varchar(45) [not null]
+  metodo_http varchar(10) [not null]
+  ruta varchar(500) [not null]
+  codigo_estado int [not null]
+  duracion_ms bigint [not null]
+  payload_request jsonb
+}
+
+Table denuncia {
+  id_sgsp bigint [pk, increment]
+  id_direccion int [not null]
+  version varchar(20) [not null]
+  control_calidad boolean [not null, default: false]
+  nro_formulario varchar(50)
+  id_modo_denuncia int [not null]
+  moneda_avalua int [not null]
+  monto_avaluado numeric(14,2) [not null]
+  requiere_investigacion boolean [not null]
+  resenna_policial text
+  fecha_seguimiento_area_investigaciones timestamp
+  fecha_seguimiento_area_seguridad timestamp
+  estado varchar(20) [not null]
+  modo_denuncia varchar(30) [not null]
+  creado_por varchar(50) [not null]
+  fecha_creacion timestamp [not null]
+  fecha_actualizacion timestamp [not null]
+}
+
+Table denuncia_ubicacion {
+  id bigint [pk, increment]
+  id_sgsp bigint [unique, not null]
+  dia_hora_conocimiento timestamp [not null]
+  fecha_hecho_desde timestamp [not null]
+  fecha_hecho_hasta timestamp
+  es_feriado boolean [not null]
+  id_uuee int [not null]
+  id_dependencia int
+  jurisdiccion_id int
+  jurisdiccion_descripcion varchar(150)
+}
+
+Table tipificacion_clasificacion {
+  id_clasificacion int [pk, increment]
+  tipo_denuncia varchar(50) [not null]
+  nombre varchar(255) [not null]
+  id_clasificacion_padre int
+  habilitada boolean [not null]
+
+  indexes {
+    (tipo_denuncia, nombre) [unique]
+  }
+}
+
+Table tipificacion_complemento {
+  id_complemento int [pk, increment]
+  id_clasificacion int [not null]
+  nombre varchar(255) [not null]
+  habilitado boolean [not null]
+
+  indexes {
+    (id_clasificacion, nombre) [unique]
+  }
+}
+
+Table denuncia_tipificacion {
+  id_sgsp bigint [pk]
+  tipo_denuncia varchar(50) [not null]
+  id_clasificacion int [not null]
+  id_complemento int
+  id_modalidad int
+  id_gravedad int
+  tentativa boolean [not null]
+  juzgados_utilizados jsonb [not null]
+}
+
+Table regla_tipificacion_ficha {
+  id_regla bigint [pk, increment]
+  id_clasificacion int [not null]
+  tipo_denuncia varchar(50)
+  ficha_requerida varchar(50) [not null]
+  cant_minima int [not null]
+  rol_persona_requerido varchar(100)
+  visible boolean [not null]
+  habilitada boolean [not null]
+
+  indexes {
+    (id_clasificacion, ficha_requerida, rol_persona_requerido) [unique]
+  }
+}
+
+Table denuncia_interviniente {
+  id_interviniente bigint [pk, increment]
+  id_sgsp bigint [not null]
+  id_persona bigint [not null]
+
+  // Nullable: solo se completa si la persona es un usuario policial
+  nombre_usuario varchar(50)
+
+  id_caracter int [not null]
+  descripcion_caracter varchar(100) [not null]
+
+  id_vehiculo bigint
+  fecha_fallecido timestamp
+  fecha_detenido timestamp
+  id_circunstancia_detencion int
+
+  relacion_indagado jsonb
+  convivencia boolean [not null, default: false]
+  espirometria jsonb
+  espirometria_droga jsonb
+  cheq_dnic boolean [not null, default: false]
+  fecha_cheq_dnic timestamp
+  id_digital boolean [not null, default: false]
+  medidas_coercion jsonb [not null, default: '[]']
+  lesion jsonb
+  escolaridad jsonb
+
+  tiene_requisitoria boolean [not null, default: false]
+  tiene_medidas_cautelares boolean [not null, default: false]
+  tiene_averiguacion_paradero boolean [not null, default: false]
+  tiene_evento_ausencia boolean [not null, default: false]
+  tiene_alerta_amber boolean [not null, default: false]
+
+  es_persona_ausente boolean [not null, default: false]
+
+  // Datos propios de la actuación policial en esa denuncia
+  toma_la_denuncia boolean [not null, default: false]
+  id_opcion_registro int
+  id_tipo_opcion_registro int
+  datos_policiales_snapshot jsonb
+}
+
+Table denuncia_narracion {
+  id_narracion bigint [pk, increment]
+  id_sgsp bigint [not null]
+  texto text [not null]
+  diagnostico_medico text
+  resolucion_judicial text
+  es_flagrante boolean
+  resultado_investigacion text
+  es_investigacion boolean [not null]
+  investigacion text
+  es_analisis_criminal boolean [not null]
+  analisis_criminal text
+  supervisor_id varchar(50)
+  supervisor_descripcion varchar(200)
+  id_usuario varchar(50) [not null]
+  fecha_hora timestamp [not null]
+  editado boolean [not null]
+  fecha_hora_edicion timestamp
+  texto_original text
+}
+
+Table denuncia_equipo_trabajo {
+  id_equipo bigint [pk, increment]
+  id_sgsp bigint [not null]
+  usuario varchar(50) [not null]
+  nombre varchar(100)
+  apellido varchar(100)
+  grado varchar(100)
+  ci varchar(20)
+  tipo int
+  fecha_asignado timestamp [not null]
+  id_dependencia int
+  estado int [not null]
+}
+
+Table denuncia_arma {
+  id_arma bigint [pk, increment]
+  id_sgsp bigint [not null]
+  tipo jsonb [not null]
+  marca varchar(100)
+  modelo varchar(100)
+  calibre varchar(50)
+  nro_serie varchar(100)
+  nro_registro varchar(100)
+  estado jsonb
+  avaluado_pesos numeric(14,2)
+  avaluado_dolares numeric(14,2)
+  pais_fabricante jsonb
+  pais_origen jsonb
+  pais_destino jsonb
+}
+
+Table denuncia_vehiculo {
+  id_vehiculo bigint [pk, increment]
+  id_sgsp bigint [not null]
+  matricula varchar(30)
+  tipo jsonb
+  marca varchar(100)
+  modelo varchar(100)
+  color varchar(50)
+  pais jsonb
+  departamento jsonb
+  chasis varchar(100)
+  padron varchar(50)
+  anio int
+  propietario jsonb
+  aseguradora jsonb
+  avaluado_pesos numeric(14,2)
+  avaluado_dolares numeric(14,2)
+  estado jsonb
+  estado_global jsonb
+  motor varchar(100)
+  requisitoria_pendiente boolean [not null]
+  remolque boolean [not null]
+  luces_encendidas boolean [not null]
+  airbag_desplegado boolean
+  cilindrada int
+  rodado varchar(50)
+  numero_cuadro varchar(100)
+  tipo_bicicleta varchar(100)
+  vehiculo_policial boolean [not null]
+  instrumento_delito boolean [not null]
+  ccu jsonb
+  estado_al_momento jsonb
+  cantidad_chapas int
+}
+
+Table denuncia_vehiculo_recuperacion {
+  id_recuperacion bigint [pk, increment]
+  id_vehiculo bigint [unique, not null]
+  fecha_hora_recuperacion timestamp
+  lugar_recuperacion jsonb
+  observaciones text
+  id_usuario varchar(50)
+}
+
+Table denuncia_objeto {
+  id_objeto bigint [pk, increment]
+  id_sgsp bigint [not null]
+  estado_global jsonb [not null]
+  tipo_objeto jsonb
+  grupo jsonb
+  instrumento_delito boolean [not null]
+  circunstancia_incautacion jsonb
+  circunstancia_incautacion_frontera jsonb
+  circunstancia_incautacion_detalle text
+  tipo_trafico jsonb
+  pais_fabricante jsonb
+  pais_origen jsonb
+  requerido boolean [not null]
+  atributos jsonb [not null]
+  datos_recuperacion jsonb [not null]
+  id_ampliacion_sgsp bigint
+  nombre_investigacion varchar(255)
+  nombre_operativo varchar(255)
+}
+
+Table denuncia_transito {
+  id_transito bigint [pk, increment]
+  id_sgsp bigint [unique, not null]
+  tipo_siniestro varchar(100)
+  zona jsonb
+  jurisdiccion jsonb
+  estado_meteorologico jsonb
+  tipo_iluminacion jsonb
+  tipo_luz_artificial jsonb
+  tipo_visibilidad jsonb
+  circunstancia_conductor jsonb
+  circunstancia_vehiculo jsonb
+  circunstancia_via jsonb
+  circunstancia_entorno jsonb
+  propiedades_via_principal jsonb
+  propiedades_via_secundaria_1 jsonb
+  tipo_colision_vehiculo jsonb
+  tipo_colision_obstaculo jsonb
+  tipo_despiste jsonb
+  tipo_atropello_peaton jsonb
+  tipo_atropello_animal jsonb
+}
+
+Table denuncia_transito_persona {
+  id_transito_persona bigint [pk, increment]
+  id_transito bigint [not null]
+  id_interviniente bigint
+  calidad varchar(100)
+  resultado varchar(100)
+  fecha_fallecido timestamp
+  forma_retiro jsonb
+  institucion_salud jsonb
+  categoria_licencia jsonb
+  autoridad_licencia jsonb
+  fecha_licencia_emitida date
+  fecha_licencia_vencimiento date
+  relacion_propietario jsonb
+  tiempo_conduccion_previo jsonb
+  resultado_espirometria jsonb
+  ubicacion jsonb
+  color_ropa varchar(100)
+  lleva_elementos_seguridad boolean
+  usa_casco boolean
+  casco_reglamentado boolean
+  casco_abrochado boolean
+  cinturon_abrochado boolean
+  sistema_proteccion_infantil boolean
+  ubicacion_sistema_sri jsonb
+}
+
+Table denuncia_ampliacion {
+  id_ampliacion bigint [pk, increment]
+  id_sgsp bigint [not null]
+  fecha_hora timestamp [not null]
+  id_usuario varchar(50) [not null]
+}
+
+Table denuncia_ampliacion_narracion {
+  id_narracion bigint [pk, increment]
+  id_ampliacion bigint [not null]
+  texto text [not null]
+  id_usuario varchar(50)
+  fecha_hora timestamp [not null]
+  supervisor_id varchar(50)
+  supervisor_descripcion varchar(200)
+  editado boolean [not null]
+  fecha_hora_edicion timestamp
+  texto_original text
+}
+
+Table denuncia_control_calidad {
+  id_control bigint [pk, increment]
+  id_sgsp bigint [not null]
+  id_usuario varchar(50) [not null]
+  fecha_hora timestamp [not null]
+  comentario text
+  control_automatizado boolean [not null]
+  intervinientes boolean [not null]
+  domicilio_intervinientes boolean [not null]
+  domicilio_evento boolean [not null]
+  formato_narracion boolean [not null]
+  relato_narracion boolean [not null]
+  ortografia boolean [not null]
+  diagnosticos_medicos_resoluciones boolean [not null]
+  tipificacion boolean [not null]
+  objetos boolean [not null]
+  indicadores_estadisticos boolean [not null]
+  control boolean [not null]
+  rechazo boolean [not null]
+  anulacion boolean [not null]
+  observaciones text
+  motivo_anulacion text
+  id_duplicado bigint
+}
+
+Table denuncia_cambio {
+  id_cambio bigint [pk, increment]
+  id_sgsp bigint [not null]
+  id_respuesta bigint
+  tipo jsonb
+  id_usuario varchar(50)
+  fecha_hora timestamp [not null]
+  comentario text
+}
+
+Ref: usuario.id_persona - persona.id_persona
+Ref: persona.id_direccion > direccion.id_direccion
+Ref: persona.id_nacionalidad > nacionalidad.id_nacionalidad
+Ref: persona.id_estado_civil > estado_civil.id_estado_civil
+Ref: persona.id_profesion > profesion.id_profesion
+Ref: persona.id_escolaridad > escolaridad.id_escolaridad
+Ref: persona.id_sexo > sexo.id_sexo
+Ref: persona.id_pais_nacimiento > nacionalidad.id_nacionalidad
+Ref: persona.id_departamento_nacimiento > departamento.id_departamento
+Ref: persona.id_localidad_nacimiento > localidad.id_localidad
+Ref: persona.id_situacion > situacion.id_situacion
+
+Ref: documento_persona.id_persona - persona.id_persona
+Ref: documento_persona.id_tipo_documento > tipo_documento.id_tipo_documento
+Ref: documento_persona.id_pais_emision > nacionalidad.id_nacionalidad
+
+Ref: usuario.id_dependencia > dependencia.id_dependencia
+Ref: usuario.id_grado > grado.id_grado
+Ref: usuario.id_escalafon > escalafon.id_escalafon
+Ref: usuario.id_turno_asignado > turno.id_turno
+Ref: usuario.id_situacion_policial > situacion_policial.id_situacion_policial
+
+Ref: dependencia.id_uuee > unidad_ejecutora.id_uuee
+Ref: dependencia.id_direccion - direccion.id_direccion
+Ref: dependencia.id_turno > turno.id_turno
+Ref: dependencia.nombre_usuario_jefe > usuario.nombre_usuario
+Ref: dependencia.nombre_usuario_segundo_jefe > usuario.nombre_usuario
+
+Ref: usuario_rol.nombre_usuario > usuario.nombre_usuario
+Ref: usuario_rol.id_rol > rol.id_rol
+Ref: rol_permiso.id_rol > rol.id_rol
+Ref: rol_permiso.id_permiso > permiso.id_permiso
+Ref: usuario_permiso.nombre_usuario > usuario.nombre_usuario
+Ref: usuario_sesion.nombre_usuario > usuario.nombre_usuario
+Ref: usuario_permiso.id_permiso > permiso.id_permiso
+Ref: auditoria_log.usuario_nombre_usuario > usuario.nombre_usuario
+
+Ref: denuncia.creado_por > usuario.nombre_usuario
+Ref: denuncia.id_direccion > direccion.id_direccion
+Ref: denuncia_ubicacion.id_sgsp - denuncia.id_sgsp
+Ref: denuncia_ubicacion.id_uuee > unidad_ejecutora.id_uuee
+Ref: denuncia_ubicacion.id_dependencia > dependencia.id_dependencia
+
+Ref: denuncia_tipificacion.id_sgsp - denuncia.id_sgsp
+Ref: denuncia_tipificacion.id_clasificacion > tipificacion_clasificacion.id_clasificacion
+Ref: denuncia_tipificacion.id_complemento > tipificacion_complemento.id_complemento
+Ref: tipificacion_complemento.id_clasificacion > tipificacion_clasificacion.id_clasificacion
+Ref: tipificacion_clasificacion.id_clasificacion_padre > tipificacion_clasificacion.id_clasificacion
+Ref: regla_tipificacion_ficha.id_clasificacion > tipificacion_clasificacion.id_clasificacion
+
+Ref: denuncia_interviniente.id_sgsp > denuncia.id_sgsp
+Ref: denuncia_interviniente.id_persona > persona.id_persona
+Ref: denuncia_interviniente.nombre_usuario > usuario.nombre_usuario
+
+Ref: denuncia_narracion.id_sgsp > denuncia.id_sgsp
+Ref: denuncia_narracion.id_usuario > usuario.nombre_usuario
+Ref: denuncia_equipo_trabajo.id_sgsp > denuncia.id_sgsp
+Ref: denuncia_equipo_trabajo.usuario > usuario.nombre_usuario
+
+Ref: denuncia_arma.id_sgsp > denuncia.id_sgsp
+Ref: denuncia_vehiculo.id_sgsp > denuncia.id_sgsp
+Ref: denuncia_vehiculo_recuperacion.id_vehiculo - denuncia_vehiculo.id_vehiculo
+Ref: denuncia_vehiculo_recuperacion.id_usuario > usuario.nombre_usuario
+Ref: denuncia_objeto.id_sgsp > denuncia.id_sgsp
+
+Ref: denuncia_transito.id_sgsp - denuncia.id_sgsp
+Ref: denuncia_transito_persona.id_transito > denuncia_transito.id_transito
+Ref: denuncia_transito_persona.id_interviniente > denuncia_interviniente.id_interviniente
+
+Ref: denuncia_ampliacion.id_sgsp > denuncia.id_sgsp
+Ref: denuncia_ampliacion.id_usuario > usuario.nombre_usuario
+Ref: denuncia_ampliacion_narracion.id_ampliacion > denuncia_ampliacion.id_ampliacion
+Ref: denuncia_ampliacion_narracion.id_usuario > usuario.nombre_usuario
+
+Ref: denuncia_control_calidad.id_sgsp > denuncia.id_sgsp
+Ref: denuncia_control_calidad.id_usuario > usuario.nombre_usuario
+Ref: denuncia_cambio.id_sgsp > denuncia.id_sgsp
+Ref: denuncia_cambio.id_usuario > usuario.nombre_usuario

@@ -1,0 +1,63 @@
+Especificaciones y restricciones estrcuturales y de datos para el ingreso de denuncias:
+- "IdSGSP": es el id único que identifica y distingue una denuncia de otra, ademas es usado como clave en las demas tablas a fin de crear la relacione que una la denuncia con las demas entidades, asu vez dado el id de una entidad, se podra saber a que denuncia pertenece
+- "ControlCalidad": booleando que indica si la denuncia ya fue controlada por la mesa de ayuda
+- "NroFormulario": numero intenro que le da la unidad a la denuncia y se relaciona con el issgsp
+- "MonedaAvalua": id que apunta a una tabla Monedas, con atributos idMoneda, abreviatura, nombre
+- "MontoAvaluado": es un campo numerico que almacenara un valor de moneda con dos digitos despues de la coma, (este campo solo es obligatorio para alguno tipos de denuncia, como por ejmplo hurto, rapiñas)
+- "RequiereInvestigacion": campo booleano
+- "ResennaPolicial": es un string opcional
+- "FechaSeguimientoAreaInvestigaciones": campo fecha opcional
+- "FechaSeguimientoAreaSeguridad": campo fecha opcional
+
+los campos mencioandos anteriormente son unicos para cada denuncia y podran modelarse en la misma tabla de denuncias
+
+a continuacion se detallas tablas complementarias, primeor su cardinalidad
+
+Intervinientes
+Ubicacion
+Narracion
+Tipificacion
+AutoridadesIntervinientes
+DireccionaNInvestigacion
+TiposArmasUtilizadas
+InformacionComplementaria
+HechoAclarado
+Multimedias
+DatosSIPPAU
+DatosSIVVE
+EsWebDenuncia
+EquipoDeTrabajo
+FichasComplementarias
+Ampliaciones
+DetallesControlCalidad
+
+
+
+1. Tabla Central: denuncia (Maestro)
+    - id_sgsp BIGINT PRIMARY KEY (Identificador del sistema)   
+    - control_calidad BOOLEAN   
+    - nro_formulario VARCHAR(50)   
+    - id_moneda_avalua INT (relacion *:1 con Tabla Monedas)
+    - monto_avaluado DECIMAL(15,2)   
+
+
+
+
+requiere_investigacion BOOLEAN   
+resenna_policial TEXT   
+
+
+
+2. Ubicación: denuncia_ubicacion (1:1 con denuncia)id BIGSERIAL PRIMARY KEYid_sgsp BIGINT UNIQUE FK -> denuncia(id_sgsp)   fecha_hora_conocimiento TIMESTAMP   fecha_hecho_desde TIMESTAMP, fecha_hecho_hasta TIMESTAMP   id_unidad_ejecutora, id_dependencia INT   calle, numero, esquina1, esquina2, padron, bis   id_localidad, id_departamento, id_jurisdiccion INT   coord_x DOUBLE PRECISION, coord_y DOUBLE PRECISION   
+3. Tipificación: denuncia_tipificacion (1:1 con denuncia)id_sgsp BIGINT PRIMARY KEY FK -> denuncia(id_sgsp)   tipo_denuncia VARCHAR(50) (Crimen, DelitoFalta, HechoPolicial, Accidente)   id_clasificacion INT FK (Apunta al catálogo unificado de Clasificaciones)   id_complemento INT FK   id_modalidad INT FK, id_gravedad INT FK   tentativa BOOLEAN   
+4. Intervinientes y Personas: denuncia_interviniente (1:N con denuncia)id BIGSERIAL PRIMARY KEYid_sgsp BIGINT FK -> denuncia(id_sgsp)   id_caracter INT (Denunciante, Víctima, Indagado, Testigo, Policial, etc.)   primer_nombre, segundo_nombre, primer_apellido, segundo_apellido   id_tipo_documento INT, cedula VARCHAR(20), pasaporte VARCHAR(30)   sexo VARCHAR(10), fecha_nacimiento DATE, edad INT   id_nacionalidad INT, id_origen_di INT   id_estado_civil INT, id_ocupacion INT, id_escolaridad INT   correo_electronico VARCHAR(100), celular VARCHAR(30)   domicilio JSONB o Foreign Key a una tabla normalizada denuncia_domicilio.   esta_en_violencia_domestica BOOLEAN, es_persona_ausente BOOLEAN   
+5. Extensión Policial: interviniente_policia (0..1:1 con denuncia_interviniente)id_interviniente BIGINT PRIMARY KEY FK -> denuncia_interviniente(id)   id_policia_actuante INT   id_grado INT, id_jefatura INT, id_seccional INT   toma_la_denuncia BOOLEAN   
+6. Fichas Complementarias (1:N con denuncia)denuncia_arma: (id_sgsp, id_tipo, marca, modelo, calibre, nro_serie, nro_registro, estado, avaluado_pesos, avaluado_dolares, etc.)   denuncia_vehiculo: (id_sgsp, matricula, id_tipo, marca, modelo, color, chasis, motor, padron, requisitoria_pendiente, etc.)   denuncia_vehiculo_recuperacion (1:1 con denuncia_vehiculo): (id_vehiculo, fecha_hora, lugar, observaciones, id_usuario).   denuncia_objeto: (id_sgsp, id_tipo_objeto, id_grupo, instrumento_delito, atributos JSONB)   
+7. Tránsito (0..1:1 con denuncia)denuncia_transito: (id_sgsp, tipo_siniestro, id_zona, id_jurisdiccion, id_estado_clima, id_iluminacion, propiedades_via_principal JSONB, propiedades_via_secundaria JSONB).   denuncia_transito_persona (1:N con denuncia_transito): (id_transito, id_interviniente FK, calidad, resultado, id_institucion_salud, usa_casco, cinturon_seguridad, etc.)   
+8. Narraciones y Ampliaciones (1:N con denuncia)denuncia_narracion: (id, id_sgsp, texto, diagnostico_medico, resolucion_judicial, es_flagrante, id_supervisor, editado, texto_original)   denuncia_ampliacion: (id, id_sgsp, fecha_hora, id_usuario)   denuncia_ampliacion_narracion: (id, id_ampliacion, texto, fecha_hora, id_usuario, id_supervisor)   
+9. Auditoría, Cambios y Control de Calidad (1:N con denuncia)denuncia_equipo_trabajo: (id_sgsp, id_usuario, grado, id_dependencia, fecha_asignado, estado)   denuncia_control_calidad: (id_sgsp, id_usuario, fecha_hora, comentario, rechazo, anulacion, indicadores_booleanos JSONB)   denuncia_cambios: (id_sgsp, id_tipo_cambio, id_usuario, fecha_hora, comentario) 
+
+9. Tabla Monedas 
+    - id_moneda_avalua INT PRIMARY KEY
+    - abreviatura VARCHAR
+    - nombre VARCHAR

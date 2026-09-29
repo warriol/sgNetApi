@@ -41,6 +41,16 @@
         </div>
       </div>
 
+      <!-- Menú Desplegable: ROL INGRESO -->
+      <div class="nav-dropdown" *ngIf="tieneRol('Ingreso') || tieneRol('Administrador')">
+        <button class="dropdown-btn">
+          Gestión <span class="arrow">&#9660;</span>
+        </button>
+        <div class="dropdown-content">
+          <a routerLink="/admin/ingreso" routerLinkActive="active">Ingreso</a>
+        </div>
+      </div>
+
       <!-- Menú Desplegable: ROL OPERADOR (Futuros Módulos) -->
       <div class="nav-dropdown" *ngIf="tieneRol('Operador')">
         <button class="dropdown-btn">

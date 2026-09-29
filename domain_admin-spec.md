@@ -258,6 +258,28 @@ Los siguientes endpoints forman parte del contrato previsto para la implementaci
 * `GET/POST/PUT/DELETE /api/Turnos`: CRUD del catálogo de turnos.
 * `PUT /api/Dependencias/{idDependencia}/funcionarios`: Reemplaza la lista de funcionarios, validando pertenencia única.
 * `PUT /api/Dependencias/{idDependencia}/jefaturas`: Asigna jefe y segundo jefe con validación de pertenencia y diferencia.
+
+## 5. Modulo de ingreso de denuncias y partes
+
+El modulo de ingreso utiliza PostgreSQL/Npgsql y se implementa sobre el esquema
+normalizado definido en `database/sql/ingreso_denuncias.sql`. La entidad raiz es
+`denuncia`; sus agregados se separan en tablas para ubicacion, tipificacion,
+intervinientes, narracion, equipo de trabajo y fichas complementarias. Las colecciones
+1:N del contrato `ingresarJSON.md` tienen tablas propias, mientras que `jsonb` se
+reserva para atributos dinamicos de objetos, catalogos extendidos e integraciones.
+
+La tabla `regla_tipificacion_ficha` contiene `id_clasificacion`, `ficha_requerida`,
+`cant_minima` y `rol_persona_requerido`, ademas de los indicadores de visibilidad y
+habilitacion. Esta matriz permite que una tipificacion determine en runtime que fichas
+son obligatorias, opcionales u ocultas. El backend debe aplicar las mismas reglas que
+el frontend y rechazar un envio incompleto con `400 Bad Request` y un campo `mensaje`.
+
+En Angular 19, `IngresoComponent` presenta un wizard de clasificacion, ubicacion,
+intervinientes, fichas, narracion y revision. Las colecciones se capturan inicialmente
+mediante grillas y modales. `IngresoService` contiene reglas locales de arranque con
+el mismo contrato de la matriz; se sustituira por una consulta HTTP de parametros sin
+cambiar el componente. La validacion cruzada se ejecuta antes de la confirmacion y
+bloquea el envio cuando una ficha no alcanza su cardinalidad minima.
 * `PUT /api/Dependencias/{idDependencia}/turno`: Asigna un turno habilitado.
 * `GET /api/Dependencias/{idDependencia}/completitud`: Devuelve las condiciones cumplidas y pendientes.
 
